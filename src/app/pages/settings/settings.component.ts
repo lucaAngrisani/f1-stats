@@ -4,6 +4,7 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { FormsModule } from '@angular/forms';
 import { SessionStore } from '../../stores/session.store';
 import { LANG } from '../../enums/lang.enum';
+import { TranslateModule } from '@ngx-translate/core';
 
 interface LanguageOption {
   value: LANG;
@@ -15,7 +16,7 @@ interface LanguageOption {
   selector: 'app-settings',
   templateUrl: './settings.component.html',
   styleUrl: './settings.component.css',
-  imports: [MatCardModule, MatButtonToggleModule, FormsModule],
+  imports: [MatCardModule, MatButtonToggleModule, FormsModule, TranslateModule],
 })
 export default class SettingsComponent {
   private store = inject(SessionStore);
