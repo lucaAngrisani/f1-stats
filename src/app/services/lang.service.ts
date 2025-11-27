@@ -7,10 +7,9 @@ export class LangService {
   constructor(private translateSvc: TranslateService) {}
 
   use(lang: LANG) {
-    console.log('LangService: Switching to language:', lang);
     this.translateSvc.use(lang).subscribe({
       next: () => {
-        console.log('LangService: Language changed successfully to', lang);
+        // Language changed successfully
       },
       error: (err) => {
         console.error('LangService: Error changing language', err);

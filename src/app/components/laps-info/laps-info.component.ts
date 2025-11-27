@@ -4,6 +4,7 @@ import { NgApexchartsModule } from 'ng-apexcharts';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
+import { TranslateModule } from '@ngx-translate/core';
 import {
   ApexAxisChartSeries,
   ApexChart,
@@ -17,6 +18,8 @@ import {
 } from 'ng-apexcharts';
 import { Driver } from '../../models/driver.model';
 import { SessionResult } from '../../models/session-result.model';
+import { Weather } from '../../models/weather.model';
+import { Position } from '../../models/position.model';
 
 interface DriverLaps {
   driverNumber: number;
@@ -31,12 +34,13 @@ interface StintInfo {
   laps: Lap[];
   compound?: string;
   avgLapTime: number;
+  bestLapTime?: number;
 }
 
 interface LapEvent {
   lapNumber: number;
   driverNumber: number;
-  type: 'pit' | 'yellow' | 'vsc' | 'incident' | 'blue' | 'fastest';
+  type: 'pit' | 'yellow' | 'vsc' | 'incident' | 'blue' | 'fastest' | 'slowest';
   icon: string;
 }
 
@@ -44,12 +48,32 @@ interface LapEvent {
   selector: 'app-laps-info',
   templateUrl: './laps-info.component.html',
   styleUrl: './laps-info.component.css',
-  imports: [NgApexchartsModule, MatTabsModule, MatCardModule, MatChipsModule],
+  imports: [NgApexchartsModule, MatTabsModule, MatCardModule, MatChipsModule, TranslateModule],
 })
 export class LapsInfoComponent {
   laps: InputSignal<Lap[]> = input<Lap[]>([]);
+  positions: InputSignal<Position[]> = input<Position[]>([]);
   drivers: InputSignal<Driver[]> = input<Driver[]>([]);
   results: InputSignal<SessionResult[]> = input<SessionResult[]>([]);
+  weather: InputSignal<Weather[]> = input<Weather[]>([]);
+  sessionType: InputSignal<string> = input<string>('');
+
+  // Seleziona 5 campioni meteo distribuiti uniformemente
+  weatherSamples: Signal<Weather[]> = computed(() => {
+    const allWeather = this.weather();
+    if (allWeather.length === 0) return [];
+    if (allWeather.length <= 5) return allWeather;
+
+    const samples: Weather[] = [];
+    const step = (allWeather.length - 1) / 4; // 4 intervalli per 5 campioni
+
+    for (let i = 0; i < 5; i++) {
+      const index = Math.round(i * step);
+      samples.push(allWeather[index]);
+    }
+
+    return samples;
+  });
 
   // Raggruppa i giri per driver
   driverLaps: Signal<DriverLaps[]> = computed(() => {
@@ -66,10 +90,32 @@ export class LapsInfoComponent {
     const driversArray = this.drivers();
     return driversArray
       .map((driver) => ({
-      driverNumber: driver.driverNumber,
-      laps: (grouped.get(driver.driverNumber) || []).sort((a, b) => a.lapNumber - b.lapNumber),
+        driverNumber: driver.driverNumber,
+        laps: (grouped.get(driver.driverNumber) || []).sort((a, b) => a.lapNumber - b.lapNumber),
       }))
       .filter((driverData) => driverData.laps.length > 0);
+  });
+
+  // Raggruppa i giri per driver ordinati per posizione finale
+  driverLapsByPosition: Signal<DriverLaps[]> = computed(() => {
+    const resultsArray = this.results();
+    const lapsData = this.driverLaps();
+
+    // Ordina per posizione finale
+    const sortedByPosition = lapsData.sort((a, b) => {
+      const resultA = resultsArray.find((r) => r.driverNumber === a.driverNumber);
+      const resultB = resultsArray.find((r) => r.driverNumber === b.driverNumber);
+
+      if (!resultA || !resultB) return 0;
+
+      // Converti posizione in numero (gestisce anche stringhe come "DNF")
+      const posA = parseInt(resultA.position?.toString() || '999');
+      const posB = parseInt(resultB.position?.toString() || '999');
+
+      return posA - posB;
+    });
+
+    return sortedByPosition;
   });
 
   // Numero massimo di giri nella gara
@@ -99,6 +145,8 @@ export class LapsInfoComponent {
               validLaps.length > 0
                 ? validLaps.reduce((sum, l) => sum + l.lapDuration, 0) / validLaps.length
                 : 0;
+            const bestLapTime =
+              validLaps.length > 0 ? Math.min(...validLaps.map((l) => l.lapDuration)) : undefined;
 
             allStints.push({
               driverNumber: driverData.driverNumber,
@@ -107,6 +155,7 @@ export class LapsInfoComponent {
               endLap: currentStint[currentStint.length - 1].lapNumber,
               laps: [...currentStint],
               avgLapTime,
+              bestLapTime,
             });
 
             stintNumber++;
@@ -126,6 +175,11 @@ export class LapsInfoComponent {
     this.driverLaps().forEach((driverData) => {
       let fastestLap = Number.MAX_VALUE;
       let fastestLapNumber = 0;
+      let slowestLap = 0;
+      let slowestLapNumber = 0;
+
+      // Identifica giri "puliti" (senza pit out, con durata valida)
+      const cleanLaps = driverData.laps.filter((lap) => lap.lapDuration > 0 && !lap.isPitOutLap);
 
       driverData.laps.forEach((lap) => {
         // Pit stop
@@ -138,10 +192,18 @@ export class LapsInfoComponent {
           });
         }
 
-        // Fast lap
+        // Fast lap (tra tutti i giri validi)
         if (lap.lapDuration > 0 && lap.lapDuration < fastestLap) {
           fastestLap = lap.lapDuration;
           fastestLapNumber = lap.lapNumber;
+        }
+      });
+
+      // Slowest lap (solo tra giri puliti)
+      cleanLaps.forEach((lap) => {
+        if (lap.lapDuration > slowestLap) {
+          slowestLap = lap.lapDuration;
+          slowestLapNumber = lap.lapNumber;
         }
       });
 
@@ -151,6 +213,16 @@ export class LapsInfoComponent {
           driverNumber: driverData.driverNumber,
           type: 'fastest',
           icon: '🔥',
+        });
+      }
+
+      if (slowestLapNumber > 0 && cleanLaps.length > 3) {
+        // Solo se ha fatto almeno 4 giri puliti
+        allEvents.push({
+          lapNumber: slowestLapNumber,
+          driverNumber: driverData.driverNumber,
+          type: 'slowest',
+          icon: '🐌',
         });
       }
     });
@@ -170,8 +242,13 @@ export class LapsInfoComponent {
         })),
     }));
 
+    const colors = this.driverLaps().map((driverData) =>
+      this.getDriverTeamColor(driverData.driverNumber)
+    );
+
     return {
       series,
+      colors: colors,
       chart: {
         type: 'line',
         height: 400,
@@ -179,7 +256,14 @@ export class LapsInfoComponent {
         toolbar: { show: true },
       } as ApexChart,
       dataLabels: { enabled: false } as ApexDataLabels,
-      stroke: { curve: 'smooth', width: 2 } as ApexStroke,
+      stroke: {
+        curve: 'smooth',
+        width: 2,
+        colors: colors,
+      } as ApexStroke,
+      markers: {
+        colors: colors,
+      },
       xaxis: {
         title: { text: 'Lap Number' },
         type: 'numeric',
@@ -197,10 +281,156 @@ export class LapsInfoComponent {
       legend: {
         position: 'top',
         horizontalAlign: 'center',
+        markers: {
+          fillColors: colors,
+        },
       } as ApexLegend,
       tooltip: {
         y: {
           formatter: (val: number) => `${val.toFixed(3)}s`,
+        },
+        marker: {
+          fillColors: colors,
+        },
+      } as ApexTooltip,
+    };
+  });
+
+  // Configurazione grafico posizioni
+  positionChartOptions: Signal<any> = computed(() => {
+    const positionsData = this.positions();
+    const allLaps = this.laps();
+
+    if (positionsData.length === 0 || allLaps.length === 0) {
+      return null;
+    }
+
+    // Trova il numero massimo di giri dalla sessione
+    const maxLaps = Math.max(...allLaps.map((lap) => lap.lapNumber));
+
+    // Raggruppa le posizioni per driver
+    const positionsByDriver = new Map<number, Position[]>();
+
+    positionsData.forEach((pos) => {
+      if (!positionsByDriver.has(pos.driverNumber)) {
+        positionsByDriver.set(pos.driverNumber, []);
+      }
+      positionsByDriver.get(pos.driverNumber)!.push(pos);
+    });
+
+    // Se non ci sono driver con posizioni
+    if (positionsByDriver.size === 0) {
+      return null;
+    }
+
+    // Crea le serie per il grafico
+    const series: ApexAxisChartSeries = [];
+    const colors: string[] = [];
+
+    positionsByDriver.forEach((positions, driverNumber) => {
+      // Ordina per data
+      const sortedPositions = positions.sort(
+        (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+      );
+
+      // Ottieni i giri effettivi del pilota per sapere quanti giri ha fatto
+      const driverLaps = allLaps
+        .filter((lap) => lap.driverNumber === driverNumber)
+        .sort((a, b) => a.lapNumber - b.lapNumber);
+
+      const maxDriverLaps = driverLaps.length > 0 ? driverLaps[driverLaps.length - 1].lapNumber : maxLaps;
+
+      // Crea un array completo di posizioni per ogni giro, riempendo i gap
+      const completePositions: Array<{ x: number; y: number }> = [];
+      let currentPositionIndex = 0;
+
+      for (let lapNum = 1; lapNum <= maxDriverLaps; lapNum++) {
+        // Trova se c'è una posizione registrata per questo momento/giro
+        // Se non c'è, usa l'ultima posizione nota
+        if (currentPositionIndex < sortedPositions.length - 1) {
+          // Controlla se il prossimo cambio di posizione è relativo a questo giro o successivo
+          const nextPosition = sortedPositions[currentPositionIndex + 1];
+          const nextPositionTime = new Date(nextPosition.date).getTime();
+
+          // Se abbiamo informazioni sui giri, usiamo quello per decidere quando cambiare posizione
+          const currentLap = driverLaps.find(lap => lap.lapNumber === lapNum);
+          if (currentLap) {
+            const currentLapTime = new Date(currentLap.dateStart).getTime();
+            if (nextPositionTime <= currentLapTime) {
+              currentPositionIndex++;
+            }
+          }
+        }
+
+        completePositions.push({
+          x: lapNum,
+          y: sortedPositions[currentPositionIndex].position,
+        });
+      }
+
+      series.push({
+        name: this.getDriverAcronym(driverNumber),
+        data: completePositions,
+      });
+
+      colors.push(this.getDriverTeamColor(driverNumber));
+    });
+
+    // Trova il numero massimo di posizioni
+    const maxPosition = Math.max(...positionsData.map((p) => p.position));
+
+    return {
+      series,
+      colors: colors,
+      chart: {
+        type: 'line',
+        height: 500,
+        zoom: { enabled: true },
+        toolbar: { show: true },
+      } as ApexChart,
+      dataLabels: { enabled: false } as ApexDataLabels,
+      stroke: {
+        curve: 'smooth',
+        width: 3,
+        colors: colors,
+      } as ApexStroke,
+      markers: {
+        colors: colors,
+        size: 4,
+      },
+      xaxis: {
+        title: { text: 'Lap Number' },
+        type: 'numeric',
+        decimalsInFloat: 0,
+        min: 1,
+        max: maxLaps,
+        labels: {
+          formatter: (val: string) => Math.floor(Number(val)).toString(),
+        },
+      } as ApexXAxis,
+      yaxis: {
+        title: { text: 'Position' },
+        reversed: true,
+        min: 1,
+        max: maxPosition,
+        tickAmount: maxPosition - 1,
+        labels: {
+          formatter: (val: number) => `P${Math.round(val)}`,
+        },
+      } as ApexYAxis,
+      legend: {
+        position: 'top',
+        horizontalAlign: 'center',
+        markers: {
+          fillColors: colors,
+        },
+      } as ApexLegend,
+      tooltip: {
+        y: {
+          formatter: (val: number) => `P${val}`,
+        },
+        marker: {
+          fillColors: colors,
         },
       } as ApexTooltip,
     };
@@ -212,15 +442,9 @@ export class LapsInfoComponent {
     if (!driverData) return null;
 
     // Raccogli tutti i valori per settore (escludendo gli zeri)
-    const sector1Values = driverData.laps
-      .map((l) => l.durationSector1)
-      .filter((v) => v > 0);
-    const sector2Values = driverData.laps
-      .map((l) => l.durationSector2)
-      .filter((v) => v > 0);
-    const sector3Values = driverData.laps
-      .map((l) => l.durationSector3)
-      .filter((v) => v > 0);
+    const sector1Values = driverData.laps.map((l) => l.durationSector1).filter((v) => v > 0);
+    const sector2Values = driverData.laps.map((l) => l.durationSector2).filter((v) => v > 0);
+    const sector3Values = driverData.laps.map((l) => l.durationSector3).filter((v) => v > 0);
 
     // Calcola min e max per ogni settore
     const getMinMax = (values: number[]) => {
@@ -328,5 +552,80 @@ export class LapsInfoComponent {
   getDriverAcronym(driverNumber: number): string {
     const driver = this.getDriverByNumber(driverNumber);
     return driver ? driver.nameAcronym : `#${driverNumber}`;
+  }
+
+  getDriverTeamColor(driverNumber: number): string {
+    const driver = this.getDriverByNumber(driverNumber);
+    return driver?.teamColour ? `#${driver.teamColour}` : '#999999';
+  }
+
+  // Metodi per Timeline moderna
+
+  getBestLapTime(driverData: DriverLaps): number {
+    const validLaps = driverData.laps.filter((lap) => lap.lapDuration > 0);
+    if (validLaps.length === 0) return 0;
+    return Math.min(...validLaps.map((lap) => lap.lapDuration));
+  }
+
+  getAvgLapTime(driverData: DriverLaps): number {
+    const validLaps = driverData.laps.filter((lap) => lap.lapDuration > 0);
+    if (validLaps.length === 0) return 0;
+    const sum = validLaps.reduce((acc, lap) => acc + lap.lapDuration, 0);
+    return sum / validLaps.length;
+  }
+
+  getSparklinePath(driverData: DriverLaps): string {
+    const validLaps = driverData.laps.filter((lap) => lap.lapDuration > 0);
+    if (validLaps.length === 0) return '';
+
+    const points = validLaps.map((lap) => {
+      const x = (lap.lapNumber - 0.5) * 10;
+      const y = this.getSparklineY(lap.lapDuration, driverData);
+      return `${x},${y}`;
+    });
+
+    return `M ${points.join(' L ')}`;
+  }
+
+  getSparklineY(lapTime: number, driverData: DriverLaps): number {
+    const validLaps = driverData.laps.filter((lap) => lap.lapDuration > 0);
+    if (validLaps.length === 0) return 50;
+
+    const times = validLaps.map((lap) => lap.lapDuration);
+    const minTime = Math.min(...times);
+    const maxTime = Math.max(...times);
+    const range = maxTime - minTime;
+
+    if (range === 0) return 50;
+
+    // Inverti la scala: tempi veloci in alto (y piccolo), lenti in basso (y grande)
+    // Range: da y=10 (veloce) a y=90 (lento)
+    const normalized = (lapTime - minTime) / range;
+    return 90 - normalized * 80;
+  }
+
+  getDriverEvents(driverNumber: number): LapEvent[] {
+    return this.events().filter((event) => event.driverNumber === driverNumber);
+  }
+
+  isLapEvent(driverNumber: number, lapNumber: number, eventType: string): boolean {
+    return this.events().some(
+      (event) =>
+        event.driverNumber === driverNumber &&
+        event.lapNumber === lapNumber &&
+        event.type === eventType
+    );
+  }
+
+  getLapNumbers(): number[] {
+    const max = this.maxLapNumber();
+    return Array.from({ length: max }, (_, i) => i + 1);
+  }
+
+  formatWeatherTime(date: Date): string {
+    return new Date(date).toLocaleTimeString('en-GB', {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
   }
 }

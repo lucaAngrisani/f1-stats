@@ -1,1 +1,19 @@
-<app-session-card [session]="currentSession()"></app-session-card>
+<div class="home-container">
+  <h1 class="home-title">Latest Race Weekend</h1>
+
+  @if (sessions().length > 0) {
+    <!-- Sessione più recente (grande al centro) -->
+    <div class="featured-session">
+      <app-session-card [session]="sessions()[0]"></app-session-card>
+    </div>
+
+    <!-- Altre sessioni (se presenti) -->
+    @if (sessions().length > 1) {
+      <div class="sessions-grid">
+        @for (session of sessions().slice(1); track session.sessionKey) {
+          <app-session-card [session]="session"></app-session-card>
+        }
+      </div>
+    }
+  }
+</div>

@@ -21,6 +21,14 @@ export default class MeetingComponent implements OnInit {
     const meetingKey = this.meetingKey();
     const [sessions] = await Promise.all([this.sessionApiSvc.getSessionByMeeting(meetingKey)]);
 
-    this.sessions.set(sessions ?? []);
+    if (sessions && sessions.length > 0) {
+      // Ordina per data decrescente (più recente prima)
+      const sorted = sessions.sort((a, b) =>
+        new Date(b.dateStart).getTime() - new Date(a.dateStart).getTime()
+      );
+      this.sessions.set(sorted);
+    } else {
+      this.sessions.set([]);
+    }
   }
 }

@@ -13,7 +13,16 @@
     "loading": "Chargement",
     "search": "Rechercher",
     "start": "Démarrer",
-    "select-placeholder": "Sélectionner une option"
+    "select-placeholder": "Sélectionner une option",
+    "year": "Année",
+    "laps": "Tours",
+    "best": "Meilleur",
+    "avg": "Moyenne",
+    "duration": "Durée",
+    "gap": "Écart",
+    "circuit": "Circuit",
+    "location": "Lieu",
+    "end": "Fin"
   },
   "month": {
     "jan": "Janvier",
@@ -50,5 +59,46 @@
     "DRIVERS": "PILOTES",
     "SESSION": "SESSION",
     "SETTINGS": "PARAMÈTRES"
+  },
+  "meetings": {
+    "title": "Événements F1",
+    "no-events": "Aucun Événement Trouvé",
+    "no-events-text": "Il n'y a aucun événement F1 prévu pour"
+  },
+  "session": {
+    "current-conditions": "Conditions Actuelles",
+    "air-temp": "Temp. Air",
+    "track-temp": "Temp. Piste",
+    "humidity": "Humidité",
+    "wind": "Vent",
+    "rainfall": "Pluie",
+    "wind-dir": "Dir. Vent",
+    "pressure": "Pression",
+    "no-results": "Aucun résultat disponible",
+    "q-times": "Temps Q",
+    "q-gaps": "Écarts Q"
+  },
+  "laps": {
+    "weather-conditions": "Conditions Météorologiques",
+    "temp-evolution": "Évolution Températures Piste et Air",
+    "position-chart": "Graphique des Positions",
+    "position-evolution": "Évolution des Positions par Tour",
+    "race-positions": "Positions en Course Pendant la Session",
+    "lap-times": "Temps au Tour",
+    "lap-time-vs-lap": "Temps au Tour vs Numéro de Tour",
+    "all-drivers": "Comparaison Tous les Pilotes",
+    "sectors-heatmap": "Carte des Secteurs",
+    "sector-times": "Carte Temps des Secteurs",
+    "timeline-events": "Chronologie des Événements",
+    "race-timeline": "Chronologie de Course",
+    "lap-performance": "Performance au Tour et Événements Clés",
+    "stint-analysis": "Analyse de Stint",
+    "stint-overview": "Aperçu du Stint",
+    "tire-strategy": "Stratégie de Composés de Pneus",
+    "soft": "Tendre",
+    "medium": "Moyen",
+    "hard": "Dur",
+    "intermediate": "Intermédiaire",
+    "wet": "Pluie"
   }
 }

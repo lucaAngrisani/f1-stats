@@ -13,7 +13,16 @@
     "loading": "Cargando",
     "search": "Buscar",
     "start": "Iniciar",
-    "select-placeholder": "Selecciona una opción"
+    "select-placeholder": "Selecciona una opción",
+    "year": "Año",
+    "laps": "Vueltas",
+    "best": "Mejor",
+    "avg": "Media",
+    "duration": "Duración",
+    "gap": "Diferencia",
+    "circuit": "Circuito",
+    "location": "Ubicación",
+    "end": "Fin"
   },
   "month": {
     "jan": "Enero",
@@ -50,5 +59,46 @@
     "DRIVERS": "PILOTOS",
     "SESSION": "SESIÓN",
     "SETTINGS": "CONFIGURACIÓN"
+  },
+  "meetings": {
+    "title": "Eventos F1",
+    "no-events": "No Se Encontraron Eventos",
+    "no-events-text": "No hay eventos de F1 programados para"
+  },
+  "session": {
+    "current-conditions": "Condiciones Actuales",
+    "air-temp": "Temp. Aire",
+    "track-temp": "Temp. Pista",
+    "humidity": "Humedad",
+    "wind": "Viento",
+    "rainfall": "Lluvia",
+    "wind-dir": "Dir. Viento",
+    "pressure": "Presión",
+    "no-results": "No hay resultados disponibles",
+    "q-times": "Tiempos Q",
+    "q-gaps": "Diferencias Q"
+  },
+  "laps": {
+    "weather-conditions": "Condiciones Meteorológicas",
+    "temp-evolution": "Evolución Temperaturas Pista y Aire",
+    "position-chart": "Gráfico de Posiciones",
+    "position-evolution": "Evolución de Posiciones por Vuelta",
+    "race-positions": "Posiciones en Carrera Durante la Sesión",
+    "lap-times": "Tiempos Por Vuelta",
+    "lap-time-vs-lap": "Tiempo Por Vuelta vs Número de Vuelta",
+    "all-drivers": "Comparación Todos los Pilotos",
+    "sectors-heatmap": "Mapa de Sectores",
+    "sector-times": "Mapa Tiempos de Sectores",
+    "timeline-events": "Cronología de Eventos",
+    "race-timeline": "Cronología de Carrera",
+    "lap-performance": "Rendimiento Por Vuelta y Eventos Clave",
+    "stint-analysis": "Análisis de Stint",
+    "stint-overview": "Resumen de Stint",
+    "tire-strategy": "Estrategia de Compuestos de Neumáticos",
+    "soft": "Blando",
+    "medium": "Medio",
+    "hard": "Duro",
+    "intermediate": "Intermedio",
+    "wet": "Mojado"
   }
 }

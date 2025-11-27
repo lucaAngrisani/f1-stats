@@ -13,7 +13,7 @@
           [value]="selectedLanguage()"
           (change)="onLanguageChange($event.value)"
           vertical>
-          @for (lang of languages; track lang.value) {
+          @for (lang of languages; track $index) {
             <mat-button-toggle [value]="lang.value">
               <div class="language-option">
                 <span class="language-flag">{{ lang.flag }}</span>

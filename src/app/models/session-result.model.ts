@@ -25,12 +25,12 @@ export class SessionResult {
   @MapField({
     src: 'duration',
   })
-  duration!: number;
+  duration!: number | number[];
 
   @MapField({
     src: 'gap_to_leader',
   })
-  gapToLeader!: number;
+  gapToLeader!: number | number[] | string;
 
   @MapField({
     src: 'number_of_laps',

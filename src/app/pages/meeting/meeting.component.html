@@ -1,10 +1,18 @@
 <div class="sessions-container">
   @if (sessions().length > 0) {
-    <div class="sessions-grid">
-      @for (session of sessions(); track session.sessionKey) {
-        <app-session-card [session]="session"></app-session-card>
-      }
+    <!-- Sessione più recente (grande al centro) -->
+    <div class="featured-session">
+      <app-session-card [session]="sessions()[0]"></app-session-card>
     </div>
+
+    <!-- Altre sessioni (se presenti) -->
+    @if (sessions().length > 1) {
+      <div class="sessions-grid">
+        @for (session of sessions().slice(1); track session.sessionKey) {
+          <app-session-card [session]="session"></app-session-card>
+        }
+      </div>
+    }
   } @else {
     <p class="no-sessions">No sessions available for this meeting</p>
   }

@@ -5,6 +5,8 @@ import { API } from '../../api';
 import { Session } from '../../models/session.model';
 import { SessionResult } from '../../models/session-result.model';
 import { Lap } from '../../models/lap.model';
+import { Weather } from '../../models/weather.model';
+import { Position } from '../../models/position.model';
 
 @Injectable()
 export class SessionApiService {
@@ -31,6 +33,22 @@ export class SessionApiService {
       this.api
         .get<Lap[]>(API.SESSION.GET_LAP_TIMES?.replace('{sessionKey}', sessionKey))
         .pipe(map((res) => res?.map((item) => new Lap().from(item)) ?? []))
+    );
+  }
+
+  getPosition(sessionKey: string = 'latest'): Promise<Position[]> {
+    return firstValueFrom(
+      this.api
+        .get<Position[]>(API.SESSION.GET_POSITION?.replace('{sessionKey}', sessionKey))
+        .pipe(map((res) => res?.map((item) => new Position().from(item)) ?? []))
+    );
+  }
+
+  getWeather(sessionKey: string = 'latest'): Promise<Weather[]> {
+    return firstValueFrom(
+      this.api
+        .get<Weather[]>(API.SESSION.GET_WEATHER?.replace('{sessionKey}', sessionKey))
+        .pipe(map((res) => res?.map((item) => new Weather().from(item)) ?? []))
     );
   }
 

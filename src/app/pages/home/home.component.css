@@ -1,7 +1,15 @@
-.sessions-container {
+.home-container {
   max-width: 1400px;
   margin: 0 auto;
   padding: 2rem;
+}
+
+.home-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #e10600;
+  margin-bottom: 2rem;
+  text-align: center;
 }
 
 .featured-session {
@@ -22,16 +30,13 @@
   margin-top: 2rem;
 }
 
-.no-sessions {
-  text-align: center;
-  color: #666;
-  padding: 3rem;
-  font-size: 1.1rem;
-}
-
 @media (max-width: 768px) {
-  .sessions-container {
+  .home-container {
     padding: 1rem;
+  }
+
+  .home-title {
+    font-size: 1.5rem;
   }
 
   .featured-session {

@@ -6,15 +6,25 @@ import { SessionCardComponent } from '../../components/session/session-card.comp
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
+  styleUrl: './home.component.css',
   imports: [SessionCardComponent],
   providers: [SessionApiService],
 })
 export default class HomeComponent {
   private sessionApiSvc = inject(SessionApiService);
 
-  public currentSession = signal<Session>(new Session());
+  public sessions = signal<Session[]>([]);
 
   constructor() {
-    this.sessionApiSvc.getSession().then((res) => res?.[0] && this.currentSession.set(res[0]));
+    // Ottieni tutte le sessioni dell'ultimo meeting
+    this.sessionApiSvc.getSessionByMeeting('latest').then((res) => {
+      if (res && res.length > 0) {
+        // Ordina per data decrescente (più recente prima)
+        const sorted = res.sort((a, b) =>
+          new Date(b.dateStart).getTime() - new Date(a.dateStart).getTime()
+        );
+        this.sessions.set(sorted);
+      }
+    });
   }
 }

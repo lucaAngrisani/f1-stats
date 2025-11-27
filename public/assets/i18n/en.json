@@ -13,7 +13,16 @@
     "loading": "Loading",
     "search": "Search",
     "start": "Start",
-    "select-placeholder": "Select an option"
+    "select-placeholder": "Select an option",
+    "year": "Year",
+    "laps": "Laps",
+    "best": "Best",
+    "avg": "Avg",
+    "duration": "Duration",
+    "gap": "Gap",
+    "circuit": "Circuit",
+    "location": "Location",
+    "end": "End"
   },
   "month": {
     "jan": "January",
@@ -50,5 +59,46 @@
     "DRIVERS": "DRIVERS",
     "SESSION": "SESSION",
     "SETTINGS": "SETTINGS"
+  },
+  "meetings": {
+    "title": "F1 Events",
+    "no-events": "No Events Found",
+    "no-events-text": "There are no F1 events scheduled for"
+  },
+  "session": {
+    "current-conditions": "Current Conditions",
+    "air-temp": "Air Temp",
+    "track-temp": "Track Temp",
+    "humidity": "Humidity",
+    "wind": "Wind",
+    "rainfall": "Rainfall",
+    "wind-dir": "Wind Dir",
+    "pressure": "Pressure",
+    "no-results": "No session results available",
+    "q-times": "Q Times",
+    "q-gaps": "Q Gaps"
+  },
+  "laps": {
+    "weather-conditions": "Weather Conditions",
+    "temp-evolution": "Track & Air Temperature Evolution",
+    "position-chart": "Position Chart",
+    "position-evolution": "Position Evolution by Lap",
+    "race-positions": "Race Positions Throughout the Session",
+    "lap-times": "Lap Times",
+    "lap-time-vs-lap": "Lap Time vs Lap Number",
+    "all-drivers": "All Drivers Comparison",
+    "sectors-heatmap": "Sectors Heatmap",
+    "sector-times": "Sector Times Heatmap",
+    "timeline-events": "Timeline Events",
+    "race-timeline": "Race Timeline",
+    "lap-performance": "Lap Performance & Key Events",
+    "stint-analysis": "Stint Analysis",
+    "stint-overview": "Stint Overview",
+    "tire-strategy": "Tire Compound Strategy",
+    "soft": "Soft",
+    "medium": "Medium",
+    "hard": "Hard",
+    "intermediate": "Intermediate",
+    "wet": "Wet"
   }
 }

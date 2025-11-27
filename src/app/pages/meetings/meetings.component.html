@@ -1,5 +1,30 @@
-<div class="flex flex-col items-center gap-3">
-  @for(meeting of meetings(); track $index) {
-  <app-meeting-card [meeting]="meeting" />
+<div class="meetings-container">
+  <!-- Header con titolo e selettore anno -->
+  <div class="meetings-header">
+    <h1 class="meetings-title">{{ 'meetings.title' | translate }}</h1>
+
+    <mat-form-field class="year-selector" appearance="outline">
+      <mat-label>{{ 'common.year' | translate }}</mat-label>
+      <mat-select [value]="selectedYear()" (selectionChange)="onYearChange($event.value)">
+        @for (year of availableYears(); track year) {
+        <mat-option [value]="year">{{ year }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <!-- Grid di meeting -->
+  @if (meetings().length > 0) {
+  <div class="meetings-grid">
+    @for(meeting of meetings(); track meeting.meetingKey) {
+    <app-meeting-card [meeting]="meeting" />
+    }
+  </div>
+  } @else {
+  <div class="no-meetings">
+    <div class="no-meetings-icon">📅</div>
+    <h2 class="no-meetings-title">{{ 'meetings.no-events' | translate }}</h2>
+    <p class="no-meetings-text">{{ 'meetings.no-events-text' | translate }} {{ selectedYear() }}.</p>
+  </div>
   }
 </div>

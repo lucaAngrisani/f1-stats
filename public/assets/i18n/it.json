@@ -13,7 +13,16 @@
     "loading": "Caricamento",
     "search": "Cerca",
     "start": "Avvia",
-    "select-placeholder": "Seleziona un'opzione"
+    "select-placeholder": "Seleziona un'opzione",
+    "year": "Anno",
+    "laps": "Giri",
+    "best": "Migliore",
+    "avg": "Media",
+    "duration": "Durata",
+    "gap": "Distacco",
+    "circuit": "Circuito",
+    "location": "Località",
+    "end": "Fine"
   },
   "month": {
     "jan": "Gennaio",
@@ -50,5 +59,48 @@
     "DRIVERS": "PILOTI",
     "SESSION": "SESSIONE",
     "SETTINGS": "IMPOSTAZIONI"
+  },
+  "meetings": {
+    "title": "Eventi F1",
+    "no-events": "Nessun Evento Trovato",
+    "no-events-text": "Non ci sono eventi F1 programmati per il"
+  },
+  "session": {
+    "current-conditions": "Condizioni Attuali",
+    "air-temp": "Temp. Aria",
+    "track-temp": "Temp. Pista",
+    "humidity": "Umidità",
+    "wind": "Vento",
+    "rainfall": "Pioggia",
+    "wind-dir": "Dir. Vento",
+    "pressure": "Pressione",
+    "no-results": "Nessun risultato disponibile",
+    "q-times": "Tempi Q",
+    "q-gaps": "Distacchi Q"
+  },
+  "laps": {
+    "lap": "Giro",
+    "laps": "Giri",
+    "weather-conditions": "Condizioni Meteo",
+    "temp-evolution": "Evoluzione Temperature Pista e Aria",
+    "position-chart": "Grafico Posizioni",
+    "position-evolution": "Evoluzione Posizioni per Giro",
+    "race-positions": "Posizioni in Gara Durante la Sessione",
+    "lap-times": "Tempi Sul Giro",
+    "lap-time-vs-lap": "Tempo Sul Giro vs Numero Giro",
+    "all-drivers": "Confronto Tutti i Piloti",
+    "sectors-heatmap": "Mappa Settori",
+    "sector-times": "Mappa Tempi Settori",
+    "timeline-events": "Cronologia Eventi",
+    "race-timeline": "Cronologia Gara",
+    "lap-performance": "Prestazioni Giro ed Eventi Chiave",
+    "stint-analysis": "Analisi Stint",
+    "stint-overview": "Panoramica Stint",
+    "tire-strategy": "Strategia Mescole Gomme",
+    "soft": "Soft",
+    "medium": "Medium",
+    "hard": "Hard",
+    "intermediate": "Intermedie",
+    "wet": "Bagnato"
   }
 }
