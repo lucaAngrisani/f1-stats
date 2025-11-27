@@ -1,0 +1,40 @@
+<mat-drawer-container class="h-full" autosize>
+  <mat-drawer #drawer class="h-full" mode="over">
+    <div class="flex flex-col p-2 gap-4">
+      <div class="flex gap-2">
+        <button matIconButton (click)="drawer.toggle()" aria-label="toggle-sidenav">
+          <mat-icon>menu</mat-icon>
+        </button>
+        <div class="text-2xl">F1 Stats</div>
+      </div>
+
+      <div class="flex flex-col gap-2">
+        @for(item of menuSvc.menuItemList(); track $index) {
+        <a mat-button [routerLink]="item.route" (click)="drawer.toggle()">
+          {{ item.label | translate }}
+          @if(item.icon) {
+          <mat-icon>{{ item.icon }}</mat-icon>
+          }
+        </a>
+        }
+      </div>
+    </div>
+  </mat-drawer>
+
+  <div class="h-full">
+    <mat-toolbar>
+      <button matIconButton (click)="drawer.toggle()" aria-label="toggle-sidenav">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <div class="text-2xl">F1 Stats</div>
+    </mat-toolbar>
+
+    <div class="flex flex-col gap-2 p-4">
+      @let routeTitle = routeTitle$(); @if(routeTitle) {
+      <div class="text-xl font-bold">{{ routeTitle | translate }}</div>
+      }
+
+      <router-outlet />
+    </div>
+  </div>
+</mat-drawer-container>

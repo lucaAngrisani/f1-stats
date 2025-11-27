@@ -1,0 +1,54 @@
+{
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "actions": "Actions",
+    "confirm": "Confirm",
+    "attention": "Attention",
+    "yes": "Yes",
+    "no": "No",
+    "loading": "Loading",
+    "search": "Search",
+    "start": "Start",
+    "select-placeholder": "Select an option"
+  },
+  "month": {
+    "jan": "January",
+    "feb": "February",
+    "mar": "March",
+    "apr": "April",
+    "may": "May",
+    "jun": "June",
+    "jul": "July",
+    "aug": "August",
+    "sep": "September",
+    "oct": "October",
+    "nov": "November",
+    "dec": "December"
+  },
+  "day": {
+    "mon": "Mon",
+    "tue": "Tue",
+    "wed": "Wed",
+    "thu": "Thu",
+    "fri": "Fri",
+    "sat": "Sat",
+    "sun": "Sun"
+  },
+  "menu": {
+    "home": "Home",
+    "meetings": "Races",
+    "drivers": "Drivers",
+    "settings": "Settings"
+  },
+  "title": {
+    "MEETINGS": "RACES",
+    "MEETING": "RACE",
+    "DRIVERS": "DRIVERS",
+    "SESSION": "SESSION",
+    "SETTINGS": "SETTINGS"
+  }
+}

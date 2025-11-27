@@ -1,0 +1,11 @@
+<div class="sessions-container">
+  @if (sessions().length > 0) {
+    <div class="sessions-grid">
+      @for (session of sessions(); track session.sessionKey) {
+        <app-session-card [session]="session"></app-session-card>
+      }
+    </div>
+  } @else {
+    <p class="no-sessions">No sessions available for this meeting</p>
+  }
+</div>

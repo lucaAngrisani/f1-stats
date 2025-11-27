@@ -1,0 +1,54 @@
+{
+  "common": {
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "add": "Ajouter",
+    "actions": "Actions",
+    "confirm": "Confirmer",
+    "attention": "Attention",
+    "yes": "Oui",
+    "no": "Non",
+    "loading": "Chargement",
+    "search": "Rechercher",
+    "start": "Démarrer",
+    "select-placeholder": "Sélectionner une option"
+  },
+  "month": {
+    "jan": "Janvier",
+    "feb": "Février",
+    "mar": "Mars",
+    "apr": "Avril",
+    "may": "Mai",
+    "jun": "Juin",
+    "jul": "Juillet",
+    "aug": "Août",
+    "sep": "Septembre",
+    "oct": "Octobre",
+    "nov": "Novembre",
+    "dec": "Décembre"
+  },
+  "day": {
+    "mon": "Lun",
+    "tue": "Mar",
+    "wed": "Mer",
+    "thu": "Jeu",
+    "fri": "Ven",
+    "sat": "Sam",
+    "sun": "Dim"
+  },
+  "menu": {
+    "home": "Accueil",
+    "meetings": "Courses",
+    "drivers": "Pilotes",
+    "settings": "Paramètres"
+  },
+  "title": {
+    "MEETINGS": "COURSES",
+    "MEETING": "COURSE",
+    "DRIVERS": "PILOTES",
+    "SESSION": "SESSION",
+    "SETTINGS": "PARAMÈTRES"
+  }
+}

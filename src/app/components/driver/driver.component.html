@@ -1,0 +1,40 @@
+@if (driver()) {
+<mat-card appearance="outlined">
+  <mat-card-content>
+    <div class="flex justify-center gap-3 w-full">
+      <img
+        [src]="driver()!.headshotUrl ?? 'img/png/driver-placeholder.png'"
+        [alt]="driver()!.fullName"
+        [title]="driver()!.fullName + ' headshot'"
+        class="driver-headshot"
+        alt="driver-img"
+      />
+
+      <div class="flex flex-col gap-1">
+        <mat-card-title class="driver-name">
+          {{ driver()!.firstName }} {{ driver()!.lastName }}
+        </mat-card-title>
+
+        <mat-card-subtitle class="driver-acronym">
+          {{ driver()!.nameAcronym }}
+        </mat-card-subtitle>
+
+        <div class="flex gap-2">
+          <mat-chip [style.background-color]="teamColorStyle()" class="driver-number-chip">
+            #{{ driver()!.driverNumber }}
+          </mat-chip>
+          <mat-chip [style.background-color]="teamColorStyle()" class="team-chip">
+            {{ driver()!.teamName }}
+          </mat-chip>
+        </div>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+} @else {
+<mat-card appearance="outlined">
+  <mat-card-content>
+    <p class="no-driver">No driver data available</p>
+  </mat-card-content>
+</mat-card>
+}

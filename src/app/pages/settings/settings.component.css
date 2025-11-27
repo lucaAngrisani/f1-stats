@@ -1,0 +1,42 @@
+.settings-container {
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.settings-section {
+  margin-bottom: 2rem;
+}
+
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.language-toggle {
+  width: 100%;
+}
+
+.language-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+}
+
+.language-flag {
+  font-size: 1.5rem;
+}
+
+.language-label {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .settings-container {
+    padding: 1rem;
+  }
+}

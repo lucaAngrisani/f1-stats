@@ -1,0 +1,49 @@
+@if (session()) {
+<mat-card class="cursor-pointer" appearance="outlined" (click)="onCardClick()">
+  <mat-card-content>
+    <div class="flex flex-col items-center gap-3 w-full">
+      <div class="flex flex-col items-center gap-2 w-full">
+        <mat-chip [style.background-color]="sessionTypeColor()" class="session-type-chip">
+          {{ session()!.sessionType }}
+        </mat-chip>
+
+        <mat-card-title class="session-name">
+          {{ session()!.sessionName }}
+        </mat-card-title>
+
+        <mat-card-subtitle class="session-location">
+          {{ session()!.circuitShortName }} - {{ session()!.location }}
+        </mat-card-subtitle>
+      </div>
+
+      <div class="session-details">
+        <div class="detail-item">
+          <span class="detail-icon">📅</span>
+          <span class="detail-text">{{ formattedDateStart() }}</span>
+        </div>
+
+        <div class="detail-item">
+          <span class="detail-icon">🏁</span>
+          <span class="detail-text">{{ formattedDateEnd() }}</span>
+        </div>
+
+        <div class="detail-item">
+          <span class="detail-icon">🌍</span>
+          <span class="detail-text">{{ session()!.countryCode }} {{ session()!.countryName }}</span>
+        </div>
+
+        <div class="detail-item">
+          <span class="detail-icon">📆</span>
+          <span class="detail-text">{{ session()!.year }}</span>
+        </div>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+} @else {
+<mat-card appearance="outlined">
+  <mat-card-content>
+    <p class="no-session">No session data available</p>
+  </mat-card-content>
+</mat-card>
+}

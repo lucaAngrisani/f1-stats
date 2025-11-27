@@ -1,0 +1,16 @@
+{
+  "hosting": {
+    "public": "dist/f1-stats/browser",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}

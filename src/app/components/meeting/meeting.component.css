@@ -1,0 +1,28 @@
+.sessions-container {
+  padding: 1rem;
+  width: 100%;
+}
+
+.sessions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.no-sessions {
+  text-align: center;
+  color: #666;
+  padding: 2rem;
+  font-size: 1rem;
+}
+
+@media (max-width: 768px) {
+  .sessions-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sessions-container {
+    padding: 0.5rem;
+  }
+}

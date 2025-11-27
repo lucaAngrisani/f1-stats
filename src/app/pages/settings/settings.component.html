@@ -1,0 +1,24 @@
+<div class="settings-container">
+  <mat-card appearance="outlined">
+    <mat-card-content>
+      <div class="settings-section">
+        <h3 class="section-title">Language / Lingua / Idioma / Langue</h3>
+
+        <mat-button-toggle-group
+          class="language-toggle"
+          [value]="selectedLanguage()"
+          (change)="onLanguageChange($event.value)"
+          vertical>
+          @for (lang of languages; track lang.value) {
+            <mat-button-toggle [value]="lang.value">
+              <div class="language-option">
+                <span class="language-flag">{{ lang.flag }}</span>
+                <span class="language-label">{{ lang.label }}</span>
+              </div>
+            </mat-button-toggle>
+          }
+        </mat-button-toggle-group>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

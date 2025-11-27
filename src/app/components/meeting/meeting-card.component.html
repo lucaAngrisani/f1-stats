@@ -1,0 +1,46 @@
+@if (meeting()) {
+<mat-card class="cursor-pointer" appearance="outlined" (click)="onCardClick()">
+  <mat-card-content>
+    <div class="flex flex-col items-center gap-3 w-full">
+      <div class="flex flex-col items-center gap-2 w-full">
+        <mat-card-title class="meeting-name">
+          {{ meeting()!.meetingName }}
+        </mat-card-title>
+
+        <mat-card-subtitle class="meeting-location">
+          {{ meeting()!.location }}
+        </mat-card-subtitle>
+
+        <div class="flex gap-2 items-center">
+          <mat-chip class="country-chip">
+            {{ meeting()!.countryCode }} {{ meeting()!.countryName }}
+          </mat-chip>
+        </div>
+      </div>
+
+      <div class="meeting-details">
+        <div class="detail-item">
+          <span class="detail-icon">📅</span>
+          <span class="detail-text">{{ formattedDate() }}</span>
+        </div>
+
+        <div class="detail-item">
+          <span class="detail-icon">🏁</span>
+          <span class="detail-text">{{ meeting()!.circuitShortName }}</span>
+        </div>
+
+        <div class="detail-item">
+          <span class="detail-icon">📆</span>
+          <span class="detail-text">{{ meeting()!.year }}</span>
+        </div>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+} @else {
+<mat-card appearance="outlined">
+  <mat-card-content>
+    <p class="no-meeting">No meeting data available</p>
+  </mat-card-content>
+</mat-card>
+}

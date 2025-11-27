@@ -1,0 +1,55 @@
+.session-type-chip {
+  color: white;
+  font-weight: 700;
+  font-size: 1.25rem;
+  padding: 0.75rem 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.session-name {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 0;
+  text-align: center;
+}
+
+.session-location {
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-top: 0.25rem;
+  text-align: center;
+}
+
+.session-details {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: var(--mat-card-background-color);
+  border-radius: 8px;
+  border: 1px solid var(--mat-card-outline-color);
+}
+
+.detail-icon {
+  font-size: 1.25rem;
+}
+
+.detail-text {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.no-session {
+  text-align: center;
+  color: var(--mat-card-subtitle-text-color);
+  padding: 2rem;
+}

@@ -1,0 +1,54 @@
+{
+  "common": {
+    "save": "Salva",
+    "cancel": "Annulla",
+    "delete": "Elimina",
+    "edit": "Modifica",
+    "add": "Aggiungi",
+    "actions": "Azioni",
+    "confirm": "Conferma",
+    "attention": "Attenzione",
+    "yes": "Sì",
+    "no": "No",
+    "loading": "Caricamento",
+    "search": "Cerca",
+    "start": "Avvia",
+    "select-placeholder": "Seleziona un'opzione"
+  },
+  "month": {
+    "jan": "Gennaio",
+    "feb": "Febbraio",
+    "mar": "Marzo",
+    "apr": "Aprile",
+    "may": "Maggio",
+    "jun": "Giugno",
+    "jul": "Luglio",
+    "aug": "Agosto",
+    "sep": "Settembre",
+    "oct": "Ottobre",
+    "nov": "Novembre",
+    "dec": "Dicembre"
+  },
+  "day": {
+    "mon": "Lun",
+    "tue": "Mar",
+    "wed": "Mer",
+    "thu": "Gio",
+    "fri": "Ven",
+    "sat": "Sab",
+    "sun": "Dom"
+  },
+  "menu": {
+    "home": "Home",
+    "meetings": "Gare",
+    "drivers": "Piloti",
+    "settings": "Impostazioni"
+  },
+  "title": {
+    "MEETINGS": "GARE",
+    "MEETING": "GARA",
+    "DRIVERS": "PILOTI",
+    "SESSION": "SESSIONE",
+    "SETTINGS": "IMPOSTAZIONI"
+  }
+}

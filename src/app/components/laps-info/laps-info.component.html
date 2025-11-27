@@ -1,0 +1,180 @@
+<div class="laps-info-container">
+  <mat-tab-group>
+    <!-- Tab 1: Grafico Lap Times -->
+    <mat-tab label="Lap Times">
+      <div class="tab-content">
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title>Lap Time vs Lap Number</mat-card-title>
+            <mat-card-subtitle>All Drivers Comparison</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            @if (lapTimeChartOptions(); as options) {
+            <apx-chart
+              [series]="options.series"
+              [chart]="options.chart"
+              [dataLabels]="options.dataLabels"
+              [stroke]="options.stroke"
+              [xaxis]="options.xaxis"
+              [yaxis]="options.yaxis"
+              [legend]="options.legend"
+              [tooltip]="options.tooltip"
+            ></apx-chart>
+            }
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </mat-tab>
+
+    <!-- Tab 2: Heatmap Settori -->
+    <mat-tab label="Sectors Heatmap">
+      <div class="tab-content">
+        @for (driverData of driverLaps(); track $index) {
+        <mat-card class="driver-heatmap">
+          <mat-card-header>
+            <mat-card-title>{{ getDriverName(driverData.driverNumber) }}</mat-card-title>
+            <mat-card-subtitle>Sector Times Heatmap</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            @if (getHeatmapOptions(driverData.driverNumber); as options) {
+            <apx-chart
+              [series]="options.series"
+              [chart]="options.chart"
+              [dataLabels]="options.dataLabels"
+              [plotOptions]="options.plotOptions"
+              [xaxis]="options.xaxis"
+            ></apx-chart>
+            }
+          </mat-card-content>
+        </mat-card>
+        }
+      </div>
+    </mat-tab>
+
+    <!-- Tab 3: Timeline Eventi -->
+    <mat-tab label="Timeline Events">
+      <div class="tab-content">
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title>Race Timeline</mat-card-title>
+            <mat-card-subtitle>Key Events by Lap</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="timeline">
+              @for (driverData of driverLaps(); track $index) {
+              <div class="driver-timeline">
+                <div class="driver-timeline-header">
+                  <mat-chip>{{ getDriverAcronym(driverData.driverNumber) }}</mat-chip>
+                </div>
+                <div class="timeline-laps">
+                  @for (lap of driverData.laps; track $index) {
+                  <div class="timeline-lap" [class.pit-lap]="lap.isPitOutLap">
+                    <span class="lap-number">L{{ lap.lapNumber }}</span>
+                    <div class="lap-events">
+                      @for (event of events(); track $index) { @if (event.lapNumber ===
+                      lap.lapNumber && event.driverNumber === lap.driverNumber) {
+                      <span class="event-icon" [title]="event.type">{{ event.icon }}</span>
+                      } }
+                    </div>
+                    <span class="lap-time">{{ formatTime(lap.lapDuration) }}</span>
+                  </div>
+                  }
+                </div>
+              </div>
+              }
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </mat-tab>
+
+    <!-- Tab 4: Gantt Stint -->
+    <mat-tab label="Stint Analysis">
+      <div class="tab-content">
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title>Stint Overview</mat-card-title>
+            <mat-card-subtitle>Tire Compound Strategy</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="gantt-container">
+              @for (driverData of drivers(); track $index) {
+              <div class="gantt-row">
+                <div class="gantt-label">
+                  <mat-chip>{{ getDriverAcronym(driverData.driverNumber) }}</mat-chip>
+                </div>
+                <div class="gantt-bars">
+                  @for (stint of stints(); track $index) { @if
+                  (stint.driverNumber === driverData.driverNumber) {
+                  <div
+                    class="gantt-bar"
+                    [style.left.%]="((stint.startLap - 1) / maxLapNumber()) * 100"
+                    [style.width.%]="((stint.endLap - stint.startLap + 1) / maxLapNumber()) * 100"
+                    [style.background-color]="getCompoundColor(stint.compound, stint.stintNumber)"
+                    [style.border]="
+                      getCompoundColor(stint.compound, stint.stintNumber) === '#FFFFFF'
+                        ? '2px solid #333'
+                        : '2px solid rgba(0,0,0,0.2)'
+                    "
+                    [style.color]="getStintTextColor(stint.compound, stint.stintNumber)"
+                    [title]="
+                      'Stint ' + stint.stintNumber + ': L' + stint.startLap + '-' + stint.endLap
+                    "
+                  >
+                    <div class="gantt-bar-content">
+                      <span class="stint-label">S{{ stint.stintNumber }}</span>
+                      @if (stint.avgLapTime > 0) {
+                      <span class="stint-avg">{{ formatTime(stint.avgLapTime) }}</span>
+                      }
+                    </div>
+                  </div>
+                  } }
+                </div>
+              </div>
+              }
+            </div>
+
+            <!-- Legenda gomme -->
+            <div class="compound-legend">
+              <div class="legend-item">
+                <div
+                  class="legend-color soft-color"
+                  [style.background-color]="getCompoundColor('soft')"
+                ></div>
+                <span>Soft</span>
+              </div>
+              <div class="legend-item">
+                <div
+                  class="legend-color medium-color"
+                  [style.background-color]="getCompoundColor('medium')"
+                ></div>
+                <span>Medium</span>
+              </div>
+              <div class="legend-item">
+                <div
+                  class="legend-color hard-color"
+                  [style.background-color]="getCompoundColor('hard')"
+                ></div>
+                <span>Hard</span>
+              </div>
+              <div class="legend-item">
+                <div
+                  class="legend-color inter-color"
+                  [style.background-color]="getCompoundColor('intermediate')"
+                ></div>
+                <span>Intermediate</span>
+              </div>
+              <div class="legend-item">
+                <div
+                  class="legend-color wet-color"
+                  [style.background-color]="getCompoundColor('wet')"
+                ></div>
+                <span>Wet</span>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>
