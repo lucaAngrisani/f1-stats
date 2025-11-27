@@ -459,5 +459,9 @@
         }
       </div>
     </mat-tab>
+
+    <mat-tab [label]="'laps.track' | translate">
+      <app-track [drivers]="drivers()"></app-track>
+    </mat-tab>
   </mat-tab-group>
 </div>

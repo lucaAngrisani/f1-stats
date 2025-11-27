@@ -1,0 +1,98 @@
+<div class="track-container">
+  @if (locations().length > 0 && uniqueTimestamps().length > 0) {
+  <mat-card class="track-visualization">
+    <mat-card-header>
+      <mat-card-title>Track Position Visualization</mat-card-title>
+      <mat-card-subtitle>Real-time driver positions on track</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <!-- SVG Track Visualization -->
+      <div class="track-svg-container">
+        <svg class="track-svg" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid meet">
+          <!-- Track path (background) -->
+          <path class="track-path" [attr.d]="trackPath()" />
+
+          <!-- Driver markers -->
+          @for (driverLoc of currentDriverLocations(); track driverLoc.driver.driverNumber) {
+          <g
+            class="driver-marker"
+            [attr.transform]="
+              'translate(' + scaleX(driverLoc.location.x) + ',' + scaleY(driverLoc.location.y) + ')'
+            "
+          >
+            <circle [attr.r]="12" [attr.fill]="'#' + driverLoc.driver.teamColour" />
+            <text class="driver-number" y="1">
+              {{ driverLoc.driver.driverNumber }}
+            </text>
+            <title>{{ driverLoc.driver.nameAcronym }} - {{ driverLoc.driver.teamName }}</title>
+          </g>
+          }
+        </svg>
+      </div>
+
+      <!-- Drivers Legend -->
+      <div class="drivers-legend">
+        @for (driverLoc of currentDriverLocations(); track driverLoc.driver.driverNumber) {
+        <div class="driver-legend-item">
+          <div
+            class="driver-color-box"
+            [style.background-color]="'#' + driverLoc.driver.teamColour"
+          ></div>
+          <span class="driver-legend-name">
+            {{ driverLoc.driver.driverNumber }} - {{ driverLoc.driver.nameAcronym }}
+          </span>
+        </div>
+        }
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Controls -->
+  <mat-card class="controls-container">
+    <!-- Time Display -->
+    <div class="time-display">
+      @if (currentTimestamp(); as timestamp) {
+      {{ formatTimestamp(timestamp) }}
+      }
+    </div>
+
+    <!-- Slider -->
+    <div class="slider-container">
+      <label class="slider-label">
+        Timeline: {{ currentTimeIndex() + 1 }} / {{ uniqueTimestamps().length }}
+      </label>
+      <mat-slider
+        [min]="0"
+        [max]="uniqueTimestamps().length - 1"
+        [step]="1"
+        [discrete]="true"
+        [showTickMarks]="false"
+      >
+        <input
+          title="slider-position"
+          matSliderThumb
+          [value]="currentTimeIndex()"
+          (valueChange)="onSliderChange($event)"
+          [attr.aria-label]="'Timeline position'"
+        />
+      </mat-slider>
+    </div>
+
+    <!-- Playback Controls -->
+    <div class="playback-controls">
+      <button mat-raised-button color="primary" (click)="togglePlayPause()">
+        <mat-icon>{{ isPlaying() ? 'pause' : 'play_arrow' }}</mat-icon>
+        {{ isPlaying() ? 'Pause' : 'Play' }}
+      </button>
+      <button mat-raised-button (click)="reset()">
+        <mat-icon>replay</mat-icon>
+        Reset
+      </button>
+    </div>
+  </mat-card>
+  } @else {
+  <div class="no-data-message">
+    <p>No location data available for this session</p>
+  </div>
+  }
+</div>

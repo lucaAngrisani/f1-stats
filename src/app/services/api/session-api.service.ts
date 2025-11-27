@@ -7,6 +7,7 @@ import { SessionResult } from '../../models/session-result.model';
 import { Lap } from '../../models/lap.model';
 import { Weather } from '../../models/weather.model';
 import { Position } from '../../models/position.model';
+import { Location } from '../../models/location.model';
 
 @Injectable()
 export class SessionApiService {
@@ -15,7 +16,7 @@ export class SessionApiService {
   getSession(sessionKey: string = 'latest'): Promise<Session[]> {
     return firstValueFrom(
       this.api
-        .get<Session[]>(API.SESSION.GET_ALL?.replace('{sessionKey}', sessionKey))
+        .get<Session[]>(API.SESSION.GET_ALL.replace('{sessionKey}', sessionKey))
         .pipe(map((res) => res?.map((item) => new Session().from(item)) ?? []))
     );
   }
@@ -23,7 +24,7 @@ export class SessionApiService {
   getSessionResult(sessionKey: string = 'latest'): Promise<SessionResult[]> {
     return firstValueFrom(
       this.api
-        .get<SessionResult[]>(API.SESSION.GET_INFO?.replace('{sessionKey}', sessionKey))
+        .get<SessionResult[]>(API.SESSION.GET_INFO.replace('{sessionKey}', sessionKey))
         .pipe(map((res) => res?.map((item) => new SessionResult().from(item)) ?? []))
     );
   }
@@ -31,7 +32,7 @@ export class SessionApiService {
   getLap(sessionKey: string = 'latest'): Promise<Lap[]> {
     return firstValueFrom(
       this.api
-        .get<Lap[]>(API.SESSION.GET_LAP_TIMES?.replace('{sessionKey}', sessionKey))
+        .get<Lap[]>(API.SESSION.GET_LAP_TIMES.replace('{sessionKey}', sessionKey))
         .pipe(map((res) => res?.map((item) => new Lap().from(item)) ?? []))
     );
   }
@@ -39,15 +40,23 @@ export class SessionApiService {
   getPosition(sessionKey: string = 'latest'): Promise<Position[]> {
     return firstValueFrom(
       this.api
-        .get<Position[]>(API.SESSION.GET_POSITION?.replace('{sessionKey}', sessionKey))
+        .get<Position[]>(API.SESSION.GET_POSITION.replace('{sessionKey}', sessionKey))
         .pipe(map((res) => res?.map((item) => new Position().from(item)) ?? []))
+    );
+  }
+
+  getLocations(sessionKey: string = 'latest', dateStart: Date, dateEnd: Date): Promise<Location[]> {
+    return firstValueFrom(
+      this.api
+        .get<Location[]>(API.SESSION.GET_LOCATIONS.replace('{sessionKey}', sessionKey).replace('{dateStart}', dateStart.toISOString()).replace('{dateEnd}', dateEnd.toISOString()))
+        .pipe(map((res) => res?.map((item) => new Location().from(item)) ?? []))
     );
   }
 
   getWeather(sessionKey: string = 'latest'): Promise<Weather[]> {
     return firstValueFrom(
       this.api
-        .get<Weather[]>(API.SESSION.GET_WEATHER?.replace('{sessionKey}', sessionKey))
+        .get<Weather[]>(API.SESSION.GET_WEATHER.replace('{sessionKey}', sessionKey))
         .pipe(map((res) => res?.map((item) => new Weather().from(item)) ?? []))
     );
   }
@@ -55,7 +64,7 @@ export class SessionApiService {
   getSessionByMeeting(meetingKey: string = 'latest'): Promise<Session[]> {
     return firstValueFrom(
       this.api
-        .get<Session[]>(API.SESSION.GET_BY_MEETING?.replace('{meetingKey}', meetingKey))
+        .get<Session[]>(API.SESSION.GET_BY_MEETING.replace('{meetingKey}', meetingKey))
         .pipe(map((res) => res?.map((item) => new Session().from(item)) ?? []))
     );
   }

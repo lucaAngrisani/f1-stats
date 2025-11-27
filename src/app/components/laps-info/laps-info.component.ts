@@ -20,6 +20,7 @@ import { Driver } from '../../models/driver.model';
 import { SessionResult } from '../../models/session-result.model';
 import { Weather } from '../../models/weather.model';
 import { Position } from '../../models/position.model';
+import { TrackComponent } from '../track/track.component';
 
 interface DriverLaps {
   driverNumber: number;
@@ -48,12 +49,12 @@ interface LapEvent {
   selector: 'app-laps-info',
   templateUrl: './laps-info.component.html',
   styleUrl: './laps-info.component.css',
-  imports: [NgApexchartsModule, MatTabsModule, MatCardModule, MatChipsModule, TranslateModule],
+  imports: [NgApexchartsModule, MatTabsModule, MatCardModule, MatChipsModule, TrackComponent, TranslateModule],
 })
 export class LapsInfoComponent {
   laps: InputSignal<Lap[]> = input<Lap[]>([]);
-  positions: InputSignal<Position[]> = input<Position[]>([]);
   drivers: InputSignal<Driver[]> = input<Driver[]>([]);
+  positions: InputSignal<Position[]> = input<Position[]>([]);
   results: InputSignal<SessionResult[]> = input<SessionResult[]>([]);
   weather: InputSignal<Weather[]> = input<Weather[]>([]);
   sessionType: InputSignal<string> = input<string>('');

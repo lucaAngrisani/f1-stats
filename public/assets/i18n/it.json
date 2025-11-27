@@ -79,8 +79,7 @@
     "q-gaps": "Distacchi Q"
   },
   "laps": {
-    "lap": "Giro",
-    "laps": "Giri",
+    "track": "Circuito",
     "weather-conditions": "Condizioni Meteo",
     "temp-evolution": "Evoluzione Temperature Pista e Aria",
     "position-chart": "Grafico Posizioni",

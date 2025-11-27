@@ -1,0 +1,170 @@
+.track-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.track-visualization {
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.track-svg-container {
+  width: 100%;
+  height: 600px;
+  background: #0a0a0a;
+  border-radius: 8px;
+  border: 2px solid #333;
+  position: relative;
+  overflow: hidden;
+}
+
+.track-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.track-path {
+  fill: none;
+  stroke: #444;
+  stroke-width: 8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.6;
+}
+
+.driver-marker {
+  transition: all 0.1s ease-out;
+  cursor: pointer;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+}
+
+.driver-marker:hover {
+  filter: drop-shadow(0 4px 8px rgba(255, 255, 255, 0.3));
+}
+
+.driver-marker circle {
+  stroke: #fff;
+  stroke-width: 2;
+}
+
+.driver-number {
+  font-size: 12px;
+  font-weight: bold;
+  fill: #fff;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  pointer-events: none;
+}
+
+.controls-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background: #2d2d2d;
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+
+.time-display {
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #fff;
+  font-family: 'Courier New', monospace;
+  background: #1a1a1a;
+  padding: 0.75rem;
+  border-radius: 8px;
+  border: 2px solid #444;
+}
+
+.slider-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.slider-label {
+  font-size: 0.9rem;
+  color: #aaa;
+  font-weight: 500;
+}
+
+.playback-controls {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.playback-controls button {
+  min-width: 120px;
+}
+
+.drivers-legend {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 0.5rem;
+  padding: 1rem;
+  background: #1a1a1a;
+  border-radius: 8px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.driver-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  background: #2d2d2d;
+  font-size: 0.85rem;
+}
+
+.driver-color-box {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  flex-shrink: 0;
+}
+
+.driver-legend-name {
+  color: #fff;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.no-data-message {
+  text-align: center;
+  padding: 3rem;
+  color: #666;
+  font-size: 1.1rem;
+}
+
+/* Scrollbar styling */
+.drivers-legend::-webkit-scrollbar {
+  width: 8px;
+}
+
+.drivers-legend::-webkit-scrollbar-track {
+  background: #1a1a1a;
+  border-radius: 4px;
+}
+
+.drivers-legend::-webkit-scrollbar-thumb {
+  background: #444;
+  border-radius: 4px;
+}
+
+.drivers-legend::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
