@@ -8,12 +8,13 @@ import { Lap } from '../../models/lap.model';
 import { LapsInfoComponent } from '../../components/laps-info/laps-info.component';
 import { Weather } from '../../models/weather.model';
 import { Position } from '../../models/position.model';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-session',
   templateUrl: './session.component.html',
   styleUrl: './session.component.css',
-  imports: [LapsInfoComponent],
+  imports: [LapsInfoComponent, DatePipe],
   providers: [SessionApiService, DriverApiService, LapsInfoComponent],
 })
 export default class SessionComponent implements OnInit {
@@ -95,29 +96,6 @@ export default class SessionComponent implements OnInit {
 
   getDriverByNumber(driverNumber: number): Driver | undefined {
     return this.drivers().find((d) => d.driverNumber === driverNumber);
-  }
-
-  formatWeatherTime(date: Date): string {
-    return new Date(date).toLocaleTimeString('en-GB', {
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  }
-
-  formatSessionDate(dateString: string): string {
-    return new Date(dateString).toLocaleDateString('en-GB', {
-      weekday: 'short',
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    });
-  }
-
-  formatSessionTime(dateString: string): string {
-    return new Date(dateString).toLocaleTimeString('en-GB', {
-      hour: '2-digit',
-      minute: '2-digit',
-    });
   }
 
   isArray(value: any): value is any[] {

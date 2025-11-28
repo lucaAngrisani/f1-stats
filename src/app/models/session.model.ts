@@ -1,4 +1,4 @@
-import { MapClass, MapField, MapInterface } from 'mapper-factory';
+import { DateField, MapClass, MapField, MapInterface } from 'mapper-factory';
 
 @MapClass()
 export class Session {
@@ -29,13 +29,17 @@ export class Session {
 
   @MapField({
     src: 'date_start',
+    transformer: (dateISO) => (dateISO ? new Date(dateISO) : null),
+    reverser: (date) => date?.toISOString() ?? null,
   })
-  dateStart!: string;
+  dateStart!: Date;
 
   @MapField({
     src: 'date_end',
+    transformer: (dateISO) => (dateISO ? new Date(dateISO) : null),
+    reverser: (date) => date?.toISOString() ?? null,
   })
-  dateEnd!: string;
+  dateEnd!: Date;
 
   @MapField({
     src: 'gmt_offset',
@@ -55,7 +59,7 @@ export class Session {
   @MapField({
     src: 'session_key',
   })
-  sessionKey!: number;
+  sessionKey!: string;
 
   @MapField({
     src: 'session_name',

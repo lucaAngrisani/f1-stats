@@ -8,5 +8,5 @@ export class SESSION_API {
   static readonly GET_CAR_DATA = `${SESSION_API.BASE_URL}car_data?session_key={sessionKey}`;
   static readonly GET_POSITION = `${SESSION_API.BASE_URL}position?session_key={sessionKey}`;
   static readonly GET_WEATHER = `${SESSION_API.BASE_URL}weather?session_key={sessionKey}`;
-  static readonly GET_LOCATIONS = `${SESSION_API.BASE_URL}locations?session_key={sessionKey}&date>{dateStart}&date<{dateEnd}`;
+  static readonly GET_LOCATIONS = `${SESSION_API.BASE_URL}location?session_key={sessionKey}&date>{dateStart}&date<{dateEnd}`;
 }

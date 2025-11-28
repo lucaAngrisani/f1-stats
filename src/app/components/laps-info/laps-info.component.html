@@ -36,7 +36,7 @@
 
   <mat-tab-group>
     <!-- Tab 1: Position Chart (only for Race and Sprint Race) -->
-    @if (sessionType() === 'Race' || sessionType() === 'SprintRace') {
+    @if (sessionInfo().sessionType === 'Race' || sessionInfo().sessionType === 'SprintRace') {
     <mat-tab [label]="'laps.position-chart' | translate">
       <div class="tab-content">
         <mat-card>
@@ -121,7 +121,7 @@
                       <span class="stint-label">
                         S{{ stint.stintNumber }} ({{ stint.endLap - stint.startLap + 1 }})
                       </span>
-                      @if (sessionType() === 'Qualifying') { @if (stint.bestLapTime &&
+                      @if (sessionInfo().sessionType === 'Qualifying') { @if (stint.bestLapTime &&
                       stint.bestLapTime > 0) {
                       <span class="stint-avg">{{ formatTime(stint.bestLapTime) }}</span>
                       } } @else { @if (stint.avgLapTime > 0) {
@@ -461,7 +461,11 @@
     </mat-tab>
 
     <mat-tab [label]="'laps.track' | translate">
-      <app-track [drivers]="drivers()"></app-track>
+      <app-track
+        [drivers]="drivers()"
+        [sessionInfo]="sessionInfo()"
+        [positions]="positions()"
+      ></app-track>
     </mat-tab>
   </mat-tab-group>
 </div>

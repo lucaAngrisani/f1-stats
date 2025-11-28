@@ -21,6 +21,7 @@ import { SessionResult } from '../../models/session-result.model';
 import { Weather } from '../../models/weather.model';
 import { Position } from '../../models/position.model';
 import { TrackComponent } from '../track/track.component';
+import { Session } from '../../models/session.model';
 
 interface DriverLaps {
   driverNumber: number;
@@ -57,7 +58,7 @@ export class LapsInfoComponent {
   positions: InputSignal<Position[]> = input<Position[]>([]);
   results: InputSignal<SessionResult[]> = input<SessionResult[]>([]);
   weather: InputSignal<Weather[]> = input<Weather[]>([]);
-  sessionType: InputSignal<string> = input<string>('');
+  sessionInfo: InputSignal<Session> = input<Session>(new Session());
 
   // Seleziona 5 campioni meteo distribuiti uniformemente
   weatherSamples: Signal<Weather[]> = computed(() => {

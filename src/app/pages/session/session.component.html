@@ -34,7 +34,7 @@
           <div class="detail-content">
             <span class="detail-label">Start</span>
             <span class="detail-value">
-              {{ formatSessionDate(info.dateStart) }} - {{ formatSessionTime(info.dateStart) }}
+              {{ info.dateStart | date : 'EEE, dd MMM yyyy - HH:mm' }}
             </span>
           </div>
         </div>
@@ -43,7 +43,7 @@
           <span class="detail-icon">🏁</span>
           <div class="detail-content">
             <span class="detail-label">End</span>
-            <span class="detail-value">{{ formatSessionTime(info.dateEnd) }}</span>
+            <span class="detail-value">{{ info.dateEnd | date : 'HH:mm' }}</span>
           </div>
         </div>
       </div>
@@ -57,7 +57,7 @@
     <div class="weather-card">
       <div class="weather-header">
         <h3 class="weather-title">Current Conditions</h3>
-        <span class="weather-time">{{ formatWeatherTime(currentWeather()!.date) }}</span>
+        <span class="weather-time">{{ currentWeather()!.date | date : 'HH:mm' }}</span>
       </div>
 
       <div class="weather-grid">
@@ -128,7 +128,7 @@
       <div class="result-card">
         <div class="flex gap-2">
           <div class="position-badge" [class.podium]="result.position <= 3">
-            <span class="position-number">{{ result.position ?? 'DN'}}</span>
+            <span class="position-number">{{ result.position || 'DN' }}</span>
           </div>
 
           @let driver = getDriverByNumber(result.driverNumber);
@@ -232,10 +232,10 @@
 </div>
 
 <app-laps-info
+  [sessionInfo]="sessionInfo()"
   [drivers]="drivers()"
   [laps]="laps()"
   [positions]="positions()"
   [results]="session()"
   [weather]="weather()"
-  [sessionType]="sessionInfo().sessionType"
 ></app-laps-info>
