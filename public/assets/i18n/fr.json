@@ -78,12 +78,50 @@
     "q-times": "Temps Q",
     "q-gaps": "Écarts Q"
   },
+  "session-info": {
+    "circuit": "Circuit",
+    "location": "Lieu",
+    "start": "Début"
+  },
+  "weather-conditions": {
+    "initial-conditions": "Météo au départ",
+    "air-temperature": "Température de l'air",
+    "track-temperature": "Température de la piste",
+    "humidity": "Humidité",
+    "wind": "Vent",
+    "pressure": "Pression",
+    "evolution-title": "Évolution dans le temps"
+  },
+  "session-results": {
+    "laps": "Tours",
+    "duration": "Durée",
+    "gap": "Écart"
+  },
+  "stint-analysis": {
+    "title": "Aperçu du Stint",
+    "subtitle": "Stratégie de Composés de Pneus"
+  },
+  "lap-times": {
+    "title": "Temps au tour",
+    "subtitle": "Comparaison entre tous les pilotes"
+  },
+  "events": {
+    "title": "Chronologie de session",
+    "subtitle": "Performance et événements clés",
+    "laps": "Tours",
+    "best": "Meilleur",
+    "avg": "Moyenne"
+  },
   "laps": {
+    "track": "Circuit",
+    "results": "Résultats",
+    "weather": "Météo",
     "weather-conditions": "Conditions Météorologiques",
     "temp-evolution": "Évolution Températures Piste et Air",
     "position-chart": "Graphique des Positions",
     "position-evolution": "Évolution des Positions par Tour",
     "race-positions": "Positions en Course Pendant la Session",
+    "position-data-not-available": "Données de position non disponibles pour cette session",
     "lap-times": "Temps au Tour",
     "lap-time-vs-lap": "Temps au Tour vs Numéro de Tour",
     "all-drivers": "Comparaison Tous les Pilotes",
@@ -100,8 +138,5 @@
     "hard": "Dur",
     "intermediate": "Intermédiaire",
     "wet": "Pluie"
-  },
-  "events": {
-    "title": ""
   }
 }

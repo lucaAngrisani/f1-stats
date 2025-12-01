@@ -78,12 +78,50 @@
     "q-times": "Q Times",
     "q-gaps": "Q Gaps"
   },
+  "session-info": {
+    "circuit": "Circuit",
+    "location": "Location",
+    "start": "Start"
+  },
+  "weather-conditions": {
+    "initial-conditions": "Weather at Start",
+    "air-temperature": "Air Temperature",
+    "track-temperature": "Track Temperature",
+    "humidity": "Humidity",
+    "wind": "Wind",
+    "pressure": "Pressure",
+    "evolution-title": "Evolution Over Time"
+  },
+  "session-results": {
+    "laps": "Laps",
+    "duration": "Duration",
+    "gap": "Gap"
+  },
+  "stint-analysis": {
+    "title": "Stint Overview",
+    "subtitle": "Tire Compound Strategy"
+  },
+  "lap-times": {
+    "title": "Lap Time",
+    "subtitle": "Comparison Between All Drivers"
+  },
+  "events": {
+    "title": "Session Timeline",
+    "subtitle": "Performance and Key Events",
+    "laps": "Laps",
+    "best": "Best",
+    "avg": "Avg"
+  },
   "laps": {
+    "track": "Track",
+    "results": "Results",
+    "weather": "Weather",
     "weather-conditions": "Weather Conditions",
     "temp-evolution": "Track & Air Temperature Evolution",
     "position-chart": "Position Chart",
     "position-evolution": "Position Evolution by Lap",
     "race-positions": "Race Positions Throughout the Session",
+    "position-data-not-available": "Position data not available for this session",
     "lap-times": "Lap Times",
     "lap-time-vs-lap": "Lap Time vs Lap Number",
     "all-drivers": "All Drivers Comparison",

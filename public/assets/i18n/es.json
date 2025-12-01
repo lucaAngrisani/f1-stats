@@ -78,12 +78,50 @@
     "q-times": "Tiempos Q",
     "q-gaps": "Diferencias Q"
   },
+  "session-info": {
+    "circuit": "Circuito",
+    "location": "Ubicación",
+    "start": "Inicio"
+  },
+  "weather-conditions": {
+    "initial-conditions": "Clima en la salida",
+    "air-temperature": "Temperatura del aire",
+    "track-temperature": "Temperatura del asfalto",
+    "humidity": "Humedad",
+    "wind": "Viento",
+    "pressure": "Presión",
+    "evolution-title": "Evolución en el tiempo"
+  },
+  "session-results": {
+    "laps": "Vueltas",
+    "duration": "Duración",
+    "gap": "Diferencia"
+  },
+  "stint-analysis": {
+    "title": "Resumen de Stint",
+    "subtitle": "Estrategia de Compuestos de Neumáticos"
+  },
+  "lap-times": {
+    "title": "Tiempo por vuelta",
+    "subtitle": "Comparación entre todos los pilotos"
+  },
+  "events": {
+    "title": "Cronología de sesión",
+    "subtitle": "Rendimiento y eventos clave",
+    "laps": "Vueltas",
+    "best": "Mejor",
+    "avg": "Media"
+  },
   "laps": {
+    "track": "Circuito",
+    "results": "Resultados",
+    "weather": "Clima",
     "weather-conditions": "Condiciones Meteorológicas",
     "temp-evolution": "Evolución Temperaturas Pista y Aire",
     "position-chart": "Gráfico de Posiciones",
     "position-evolution": "Evolución de Posiciones por Vuelta",
     "race-positions": "Posiciones en Carrera Durante la Sesión",
+    "position-data-not-available": "Datos de posiciones no disponibles para esta sesión",
     "lap-times": "Tiempos Por Vuelta",
     "lap-time-vs-lap": "Tiempo Por Vuelta vs Número de Vuelta",
     "all-drivers": "Comparación Todos los Pilotos",
