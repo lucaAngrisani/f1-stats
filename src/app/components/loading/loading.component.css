@@ -1,0 +1,59 @@
+.op-loading {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  background-color: #fff;
+  background-color: rgba(0, 0, 0, 0.5);
+
+  z-index: 10000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* F1 Car Animation */
+.f1-car-container {
+  width: 100vw;
+  height: 320px;
+  position: fixed;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  overflow: visible;
+}
+
+.f1-car {
+  width: 800px;
+  height: 320px;
+  animation: moveCarLeftToRight 1.78s linear infinite;
+  position: absolute;
+  left: 0;
+}
+
+@keyframes moveCarLeftToRight {
+  0% {
+    transform: translateX(100vw);
+  }
+  100% {
+    transform: translateX(-800px);
+  }
+}
+
+/* Wheel rotation */
+.wheel {
+  animation: rotateWheel 0.5s linear infinite;
+  transform-origin: center;
+  transform-box: fill-box;
+}
+
+@keyframes rotateWheel {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

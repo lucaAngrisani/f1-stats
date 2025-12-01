@@ -1,241 +1,53 @@
-<div class="container mx-auto p-4">
-  <!-- Session Info Header -->
-  @if (sessionInfo(); as info) {
-  <div class="session-info-section">
-    <div class="session-info-card">
-      <div class="session-header">
-        <div class="session-title-group">
-          <h1 class="session-title">{{ info.sessionName }}</h1>
-        </div>
-        <div class="session-meta">
-          <span class="session-year">{{ info.year }}</span>
+@if (sessionInfo(); as info) {
+<div class="session-info-section">
+  <div class="session-info-card">
+    <div class="session-header">
+      <div class="session-title-group">
+        <h1 class="session-title">{{ info.sessionName }}</h1>
+      </div>
+      <div class="session-meta">
+        <span class="session-year">{{ info.year }}</span>
+      </div>
+    </div>
+
+    <div class="session-details">
+      <div class="detail-item">
+        <span class="detail-icon">🏁</span>
+        <div class="detail-content">
+          <span class="detail-label">{{ 'session-info.circuit' | translate }}</span>
+          <span class="detail-value">{{ info.circuitShortName }}</span>
         </div>
       </div>
 
-      <div class="session-details">
-        <div class="detail-item">
-          <span class="detail-icon">🏁</span>
-          <div class="detail-content">
-            <span class="detail-label">Circuit</span>
-            <span class="detail-value">{{ info.circuitShortName }}</span>
-          </div>
+      <div class="detail-item">
+        <span class="detail-icon">📍</span>
+        <div class="detail-content">
+          <span class="detail-label">{{ 'session-info.location' | translate }}</span>
+          <span class="detail-value">{{ info.location }}, {{ info.countryName }}</span>
         </div>
+      </div>
 
-        <div class="detail-item">
-          <span class="detail-icon">📍</span>
-          <div class="detail-content">
-            <span class="detail-label">Location</span>
-            <span class="detail-value">{{ info.location }}, {{ info.countryName }}</span>
-          </div>
-        </div>
-
-        <div class="detail-item">
-          <span class="detail-icon">📅</span>
-          <div class="detail-content">
-            <span class="detail-label">Start</span>
-            <span class="detail-value">
-              {{ info.dateStart | date : 'EEE, dd MMM yyyy - HH:mm' }}
-            </span>
-          </div>
-        </div>
-
-        <div class="detail-item">
-          <span class="detail-icon">🏁</span>
-          <div class="detail-content">
-            <span class="detail-label">End</span>
-            <span class="detail-value">{{ info.dateEnd | date : 'HH:mm' }}</span>
-          </div>
+      <div class="detail-item">
+        <span class="detail-icon">📅</span>
+        <div class="detail-content">
+          <span class="detail-label">{{ 'session-info.start' | translate }}</span>
+          <span class="detail-value">
+            {{ info.dateStart | date : 'EEE, dd MMM yyyy - HH:mm' }}
+          </span>
         </div>
       </div>
     </div>
   </div>
-  }
-
-  <!-- Weather Info Section -->
-  @if (currentWeather()) {
-  <div class="weather-section">
-    <div class="weather-card">
-      <div class="weather-header">
-        <h3 class="weather-title">Current Conditions</h3>
-        <span class="weather-time">{{ currentWeather()!.date | date : 'HH:mm' }}</span>
-      </div>
-
-      <div class="weather-grid">
-        <div class="weather-item">
-          <span class="weather-icon">🌡️</span>
-          <div class="weather-data">
-            <span class="weather-label">Air Temp</span>
-            <span class="weather-value">{{ currentWeather()!.airTemperature }}°C</span>
-          </div>
-        </div>
-
-        <div class="weather-item">
-          <span class="weather-icon">🏁</span>
-          <div class="weather-data">
-            <span class="weather-label">Track Temp</span>
-            <span class="weather-value">{{ currentWeather()!.trackTemperature }}°C</span>
-          </div>
-        </div>
-
-        <div class="weather-item">
-          <span class="weather-icon">💧</span>
-          <div class="weather-data">
-            <span class="weather-label">Humidity</span>
-            <span class="weather-value">{{ currentWeather()!.humidity }}%</span>
-          </div>
-        </div>
-
-        <div class="weather-item">
-          <span class="weather-icon">🌬️</span>
-          <div class="weather-data">
-            <span class="weather-label">Wind</span>
-            <span class="weather-value">{{ currentWeather()!.windSpeed }} km/h</span>
-          </div>
-        </div>
-
-        @if (currentWeather()!.rainfall > 0) {
-        <div class="weather-item rainfall">
-          <span class="weather-icon">🌧️</span>
-          <div class="weather-data">
-            <span class="weather-label">Rainfall</span>
-            <span class="weather-value">{{ currentWeather()!.rainfall }} mm</span>
-          </div>
-        </div>
-        }
-
-        <div class="weather-item">
-          <span class="weather-icon">🧭</span>
-          <div class="weather-data">
-            <span class="weather-label">Wind Dir</span>
-            <span class="weather-value">{{ currentWeather()!.windDirection }}°</span>
-          </div>
-        </div>
-
-        <div class="weather-item">
-          <span class="weather-icon">📊</span>
-          <div class="weather-data">
-            <span class="weather-label">Pressure</span>
-            <span class="weather-value">{{ currentWeather()!.pressure }} mbar</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  } @if (session().length > 0) {
-  <div class="results-container">
-    <div class="results-grid">
-      @for (result of session(); track $index) {
-      <div class="result-card">
-        <div class="flex gap-2">
-          <div class="position-badge" [class.podium]="result.position <= 3">
-            <span class="position-number">{{ result.position || 'DN' }}</span>
-          </div>
-
-          @let driver = getDriverByNumber(result.driverNumber);
-          <img
-            [src]="driver?.headshotUrl ?? 'img/png/driver-placeholder.png'"
-            [alt]="driver?.fullName"
-            [title]="driver?.fullName"
-            class="driver-headshot"
-            alt="driver-img"
-          />
-
-          <div class="result-content">
-            <div class="driver-info">
-              <div class="driver-identity">
-                @if (getDriverByNumber(result.driverNumber); as driver) {
-                <div class="driver-name-container">
-                  <span class="driver-name">
-                    <span class="driver-number">#{{ result.driverNumber }}</span>
-                    {{ driver.firstName }} {{ driver.lastName }}
-                  </span>
-                  <span class="driver-acronym">{{ driver.nameAcronym }}</span>
-                </div>
-                @if (driver.teamName) {
-                <div class="team-info">
-                  <span class="team-badge" [style.background-color]="'#' + driver.teamColour">
-                    {{ driver.teamName }}
-                  </span>
-                </div>
-                } }
-              </div>
-
-              <div class="status-badges">
-                @if (result.dnf) {
-                <span class="badge dnf">DNF</span>
-                } @if (result.dns) {
-                <span class="badge dns">DNS</span>
-                } @if (result.dsq) {
-                <span class="badge dsq">DSQ</span>
-                }
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="result-stats">
-          @if(result.numberOfLaps) {
-          <div class="stat-item">
-            <span class="stat-label">Laps</span>
-            <span class="stat-value">{{ result.numberOfLaps }}</span>
-          </div>
-          } @if (result.duration) {
-          <div class="stat-item">
-            <span class="stat-label">
-              @if (isQualifying() && isArray(result.duration)) { Q Times } @else { Duration }
-            </span>
-            <span class="stat-value">
-              @if (isQualifying() && isArray(result.duration)) {
-              <span class="q-times">
-                @for (time of asNumberArray(result.duration); track $index) { @if (time > 0) {
-                <span class="q-time">Q{{ $index + 1 }}: {{ formatDuration(time) }}</span>
-                } }
-              </span>
-              } @else { {{ formatDuration(asNumber(result.duration)) }} }
-            </span>
-          </div>
-          } @if (isQualifying() && result.gapToLeader) {
-          <!-- Qualifiche: mostra sempre i gap anche per P1 -->
-          <div class="stat-item">
-            <span class="stat-label">Q Gaps</span>
-            <span class="stat-value gap">
-              @if (isArray(result.gapToLeader)) {
-              <span class="q-times">
-                @for (gap of result.gapToLeader; track $index) {
-                <span class="q-time">Q{{ $index + 1 }}: {{ formatGapValue(gap) }}</span>
-                }
-              </span>
-              } @else {
-              <span class="q-times">
-                <span class="q-time">{{ formatGapValue(result.gapToLeader) }}</span>
-              </span>
-              }
-            </span>
-          </div>
-          } @else if (result.gapToLeader && result.position > 1) {
-          <!-- Gara/Sprint: mostra gap solo per posizioni > 1 -->
-          <div class="stat-item">
-            <span class="stat-label">Gap</span>
-            <span class="stat-value gap">{{ safeFormatGap(result.gapToLeader) }}</span>
-          </div>
-          }
-        </div>
-      </div>
-      }
-    </div>
-  </div>
-  } @else {
-  <div class="no-results">
-    <p>No session results available</p>
-  </div>
-  }
 </div>
+}
 
 <app-laps-info
   [sessionInfo]="sessionInfo()"
-  [drivers]="drivers()"
-  [laps]="laps()"
+  [numTotLaps]="session()[0] ? session()[0].numberOfLaps : 0"
   [positions]="positions()"
+  [drivers]="drivers()"
   [results]="session()"
   [weather]="weather()"
+  [stints]="stints()"
+  [laps]="laps()"
 ></app-laps-info>

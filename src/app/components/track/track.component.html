@@ -6,7 +6,35 @@
     <mat-card-content>
       <!-- Layout con classifica e tracciato -->
       <div class="track-layout">
-        <!-- Classifica piloti a sinistra -->
+        <!-- SVG Track Visualization -->
+        <div class="track-svg-container">
+          <svg class="track-svg" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid meet">
+            <!-- Track path (background) -->
+            <path class="track-path" [attr.d]="trackPath()" />
+
+            <!-- Driver markers -->
+            @for (driverLoc of currentDriverLocations(); track driverLoc.driver.driverNumber) {
+            <g
+              class="driver-marker"
+              [attr.transform]="
+                'translate(' +
+                scaleX(driverLoc.location.x) +
+                ',' +
+                scaleY(driverLoc.location.y) +
+                ')'
+              "
+            >
+              <circle [attr.r]="12" [attr.fill]="'#' + driverLoc.driver.teamColour" />
+              <text class="driver-number" y="1">
+                {{ driverLoc.driver.driverNumber }}
+              </text>
+              <title>{{ driverLoc.driver.nameAcronym }} - {{ driverLoc.driver.teamName }}</title>
+            </g>
+            }
+          </svg>
+        </div>
+
+        <!-- Classifica piloti a sinistra (desktop) -->
         @if (driverStandings().length > 0) {
         <div class="standings-sidebar">
           <div class="standings-list">
@@ -19,7 +47,6 @@
               ></div>
               <div class="standing-driver-info">
                 <div class="standing-driver-name">{{ standing.driver.nameAcronym }}</div>
-                <!--div class="standing-team-name">{{ standing.driver.teamName }}</div-->
               </div>
               <div class="standing-number">{{ standing.driver.driverNumber }}</div>
             </div>
@@ -27,81 +54,65 @@
           </div>
         </div>
         }
+      </div>
 
-        <!-- SVG Track Visualization -->
-        <div class="track-svg-container">
-          <svg class="track-svg" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid meet">
-            <!-- Track path (background) -->
-            <path class="track-path" [attr.d]="trackPath()" />
-
-            <!-- Driver markers -->
-            @for (driverLoc of currentDriverLocations(); track driverLoc.driver.driverNumber) {
-            <g
-              class="driver-marker"
-              [attr.transform]="
-                'translate(' + scaleX(driverLoc.location.x) + ',' + scaleY(driverLoc.location.y) + ')'
-              "
-            >
-              <circle [attr.r]="12" [attr.fill]="'#' + driverLoc.driver.teamColour" />
-              <text class="driver-number" y="1">
-                {{ driverLoc.driver.driverNumber }}
-              </text>
-              <title>{{ driverLoc.driver.nameAcronym }} - {{ driverLoc.driver.teamName }}</title>
-            </g>
-            }
-          </svg>
+      <!-- Classifica piloti sotto (mobile) -->
+      @if (driverStandings().length > 0) {
+      <div class="standings-horizontal">
+        <div class="standings-horizontal-scroll">
+          @for (standing of driverStandings(); track standing.driver.driverNumber) {
+          <div class="standing-item-horizontal">
+            <div class="standing-position">{{ standing.position }}</div>
+            <div
+              class="standing-color"
+              [style.background-color]="'#' + standing.driver.teamColour"
+            ></div>
+            <div class="standing-driver-info">
+              <div class="standing-driver-name">{{ standing.driver.nameAcronym }}</div>
+            </div>
+            <div class="standing-number">{{ standing.driver.driverNumber }}</div>
+          </div>
+          }
         </div>
       </div>
-    </mat-card-content>
-  </mat-card>
+      }
 
-  <!-- Controls -->
-  <mat-card class="controls-container">
-    <!-- Chunk Info -->
-    <div class="chunk-info">
-      <span>{{ formatDuration(currentTimeMs()) }} / {{ formatDuration(totalDurationMs()) }}</span>
-    </div>
-
-    <!-- Slider -->
-    <div class="slider-container">
-      <div class="flex gap-2">
-        <label class="slider-label"> Timeline Control </label>
-        @if (isLoadingData()) {
-        <span class="loading-indicator">
-          <mat-icon>sync</mat-icon>
-          Loading...
-        </span>
-        }
+      <!-- Chunk Info -->
+      <div class="chunk-info">
+        <span>{{ formatDuration(currentTimeMs()) }} / {{ formatDuration(totalDurationMs()) }}</span>
       </div>
 
-      <mat-slider
-        [min]="0"
-        [max]="totalDurationMs()"
-        [step]="1000"
-        [discrete]="true"
-        [showTickMarks]="false"
-      >
-        <input
-          title="slider-position"
-          matSliderThumb
-          [value]="currentTimeMs()"
-          (valueChange)="onSliderChange($event)"
-          [attr.aria-label]="'Timeline position'"
-        />
-      </mat-slider>
-    </div>
+      <!-- Slider -->
+      <div class="slider-container">
+        <mat-slider
+          [min]="0"
+          [max]="totalDurationMs()"
+          [step]="1000"
+          [discrete]="false"
+          [showTickMarks]="false"
+        >
+          <input
+            title="slider-position"
+            matSliderThumb
+            [value]="currentTimeMs()"
+            (valueChange)="onSliderChange($event)"
+            [attr.aria-label]="'Timeline position'"
+          />
+        </mat-slider>
+      </div>
 
-    <!-- Playback Controls -->
-    <div class="playback-controls">
-      <button mat-raised-button color="primary" (click)="togglePlayPause()">
-        <mat-icon>{{ isPlaying() ? 'pause' : 'play_arrow' }}</mat-icon>
-        {{ isPlaying() ? 'Pause' : 'Play' }}
-      </button>
-      <button mat-raised-button (click)="reset()">
-        <mat-icon>replay</mat-icon>
-        Reset
-      </button>
-    </div>
+      <!-- Playback Controls -->
+      <div class="playback-controls">
+        <button mat-raised-button color="primary" (click)="togglePlayPause()">
+          <mat-icon>{{ isPlaying() ? 'pause' : 'play_arrow' }}</mat-icon>
+          {{ isPlaying() ? 'Pause' : 'Play' }}
+        </button>
+        <button mat-raised-button (click)="reset()">
+          <mat-icon>replay</mat-icon>
+          Reset
+        </button>
+      </div>
+    </mat-card-content>
   </mat-card>
   } @else {
   <mat-card class="no-data-message">

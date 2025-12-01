@@ -1,7 +1,7 @@
 import { Component, inject, signal, computed } from '@angular/core';
 import { MeetingApiService } from '../../services/api/meeting-api.service';
 import { Meeting } from '../../models/meeting.model';
-import { MeetingCardComponent } from '../../components/meeting/meeting-card.component';
+import { MeetingCardComponent } from '../../components/meeting-card/meeting-card.component';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { TranslateModule } from '@ngx-translate/core';

@@ -18,12 +18,13 @@ import { provideNativeDateAdapter, MAT_DATE_LOCALE } from '@angular/material/cor
 import { provideTranslateService } from '@ngx-translate/core';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { initApp } from './functions/init.function';
 
 import { appRoutes } from './router/app.routes';
 import { provideServiceWorker } from '@angular/service-worker';
 import { SessionStore } from './stores/session.store';
+import { intercept } from './functions/interceptor.function';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -40,7 +41,7 @@ export const appConfig: ApplicationConfig = {
       withPreloading(isDevMode() ? NoPreloading : PreloadAllModules)
     ),
 
-    provideHttpClient(),
+    provideHttpClient(withInterceptors([(req, next) => intercept(req, next)])),
 
     provideTranslateService({
       loader: provideTranslateHttpLoader({

@@ -1,0 +1,28 @@
+@for (driverData of driverLapsWDriver(); track $index) {
+<mat-card class="driver-heatmap">
+  <mat-card-header>
+    <mat-card-title>
+      {{ driverData.driver.fullName }}
+      <span
+        class="team-badge"
+        [style.background-color]="'#' + driverData.driver.teamColour"
+        [style.margin-left]="'0.75rem'"
+      >
+        {{ driverData.driver.teamName }}
+      </span>
+    </mat-card-title>
+    <mat-card-subtitle>Sector Times Heatmap</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    @if (heatmapOptions()[driverData.driverNumber]; as options) {
+    <apx-chart
+      [series]="options.series"
+      [chart]="options.chart"
+      [dataLabels]="options.dataLabels"
+      [plotOptions]="options.plotOptions"
+      [xaxis]="options.xaxis"
+    ></apx-chart>
+    }
+  </mat-card-content>
+</mat-card>
+}

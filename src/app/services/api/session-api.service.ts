@@ -8,6 +8,8 @@ import { Lap } from '../../models/lap.model';
 import { Weather } from '../../models/weather.model';
 import { Position } from '../../models/position.model';
 import { Location } from '../../models/location.model';
+import { StartingGrid } from '../../models/starting-grid.model';
+import { Stint } from '../../models/stint.model';
 
 @Injectable()
 export class SessionApiService {
@@ -48,7 +50,11 @@ export class SessionApiService {
   getLocations(sessionKey: string = 'latest', dateStart: Date, dateEnd: Date): Promise<Location[]> {
     return firstValueFrom(
       this.api
-        .get<Location[]>(API.SESSION.GET_LOCATIONS.replace('{sessionKey}', sessionKey).replace('{dateStart}', dateStart.toISOString()).replace('{dateEnd}', dateEnd.toISOString()))
+        .get<Location[]>(
+          API.SESSION.GET_LOCATIONS.replace('{sessionKey}', sessionKey)
+            .replace('{dateStart}', dateStart.toISOString())
+            .replace('{dateEnd}', dateEnd.toISOString())
+        )
         .pipe(map((res) => res?.map((item) => new Location().from(item)) ?? []))
     );
   }
@@ -58,6 +64,22 @@ export class SessionApiService {
       this.api
         .get<Weather[]>(API.SESSION.GET_WEATHER.replace('{sessionKey}', sessionKey))
         .pipe(map((res) => res?.map((item) => new Weather().from(item)) ?? []))
+    );
+  }
+
+  getStartingGrid(sessionKey: string = 'latest'): Promise<StartingGrid[]> {
+    return firstValueFrom(
+      this.api
+        .get<StartingGrid[]>(API.SESSION.GET_STARTING_GRID.replace('{sessionKey}', sessionKey))
+        .pipe(map((res) => res?.map((item) => new StartingGrid().from(item)) ?? []))
+    );
+  }
+
+  getStints(sessionKey: string = 'latest'): Promise<Stint[]> {
+    return firstValueFrom(
+      this.api
+        .get<Stint[]>(API.SESSION.GET_STINTS.replace('{sessionKey}', sessionKey))
+        .pipe(map((res) => res?.map((item) => new Stint().from(item)) ?? []))
     );
   }
 

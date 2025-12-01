@@ -100,5 +100,8 @@
     "hard": "Dur",
     "intermediate": "Intermédiaire",
     "wet": "Pluie"
+  },
+  "events": {
+    "title": ""
   }
 }

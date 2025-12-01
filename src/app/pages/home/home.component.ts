@@ -1,7 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { SessionApiService } from '../../services/api/session-api.service';
 import { Session } from '../../models/session.model';
-import { SessionCardComponent } from '../../components/session/session-card.component';
+import { SessionCardComponent } from '../../components/session-card/session-card.component';
 
 @Component({
   selector: 'app-home',

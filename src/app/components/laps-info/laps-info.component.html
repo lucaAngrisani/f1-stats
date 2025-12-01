@@ -1,70 +1,31 @@
 <div class="laps-info-container">
   <!-- Weather Evolution (if data available) -->
-  @if (weather().length > 0) {
-  <mat-card class="weather-evolution-card">
-    <mat-card-header>
-      <mat-card-title>Weather Conditions</mat-card-title>
-      <mat-card-subtitle>Track & Air Temperature Evolution</mat-card-subtitle>
-    </mat-card-header>
-    <mat-card-content>
-      <div class="weather-mini-grid">
-        @for (w of weatherSamples(); track $index) {
-        <div class="weather-mini-item">
-          <span class="weather-mini-time">{{ formatWeatherTime(w.date) }}</span>
-          <div class="weather-mini-data">
-            <span class="weather-mini-stat">
-              <span class="weather-mini-icon">🌡️</span>
-              <span>{{ w.airTemperature }}°C</span>
-            </span>
-            <span class="weather-mini-stat">
-              <span class="weather-mini-icon">🏁</span>
-              <span>{{ w.trackTemperature }}°C</span>
-            </span>
-            @if (w.rainfall > 0) {
-            <span class="weather-mini-stat rainfall">
-              <span class="weather-mini-icon">🌧️</span>
-              <span>{{ w.rainfall }}mm</span>
-            </span>
-            }
-          </div>
-        </div>
-        }
-      </div>
-    </mat-card-content>
-  </mat-card>
-  }
 
   <mat-tab-group>
+    <!-- Tab 0: Results -->
+    <mat-tab [label]="'laps.results' | translate">
+      <div class="tab-content">
+        <app-session-results
+          [sessionResults]="results()"
+          [sessionInfo]="sessionInfo()"
+          [drivers]="drivers()"
+        >
+        </app-session-results>
+      </div>
+    </mat-tab>
+
     <!-- Tab 1: Position Chart (only for Race and Sprint Race) -->
     @if (sessionInfo().sessionType === 'Race' || sessionInfo().sessionType === 'SprintRace') {
     <mat-tab [label]="'laps.position-chart' | translate">
       <div class="tab-content">
-        <mat-card>
-          <mat-card-header>
-            <mat-card-title>Position Evolution by Lap</mat-card-title>
-            <mat-card-subtitle>Race Positions Throughout the Session</mat-card-subtitle>
-          </mat-card-header>
-          <mat-card-content>
-            @if (positionChartOptions(); as options) {
-            <apx-chart
-              [series]="options.series"
-              [chart]="options.chart"
-              [dataLabels]="options.dataLabels"
-              [stroke]="options.stroke"
-              [markers]="options.markers"
-              [xaxis]="options.xaxis"
-              [yaxis]="options.yaxis"
-              [legend]="options.legend"
-              [tooltip]="options.tooltip"
-              [colors]="options.colors"
-            ></apx-chart>
-            } @else {
-            <div class="no-data-message">
-              <p>Position data not available for this session</p>
-            </div>
-            }
-          </mat-card-content>
-        </mat-card>
+        <app-positions
+          [results]="results()"
+          [drivers]="drivers()"
+          [positions]="positions()"
+          [numTotLaps]="numTotLaps()"
+          [driverLaps]="driverLaps()"
+        >
+        </app-positions>
       </div>
     </mat-tab>
     }
@@ -72,400 +33,56 @@
     <!-- Tab 2: Stint Analysis -->
     <mat-tab [label]="'laps.stint-analysis' | translate">
       <div class="tab-content">
-        <mat-card>
-          <mat-card-header>
-            <mat-card-title>Stint Overview</mat-card-title>
-            <mat-card-subtitle>Tire Compound Strategy</mat-card-subtitle>
-          </mat-card-header>
-          <mat-card-content>
-            <div class="gantt-container">
-              @for (driverData of drivers(); track $index) {
-              <div class="gantt-row">
-                <div class="gantt-label">
-                  @if (getDriverByNumber(driverData.driverNumber); as driver) {
-                  <div class="gantt-driver-card">
-                    <div class="gantt-driver-main">
-                      <mat-chip>{{ driver.nameAcronym }}</mat-chip>
-                      <span class="gantt-driver-number">#{{ driver.driverNumber }}</span>
-                    </div>
-                    <div class="gantt-team-info">
-                      <span
-                        class="gantt-team-badge"
-                        [style.background-color]="'#' + driver.teamColour"
-                      >
-                        {{ driver.teamName }}
-                      </span>
-                    </div>
-                  </div>
-                  }
-                </div>
-                <div class="gantt-bars">
-                  @for (stint of stints(); track $index) { @if (stint.driverNumber ===
-                  driverData.driverNumber) {
-                  <div
-                    class="gantt-bar"
-                    [style.left.%]="((stint.startLap - 1) / maxLapNumber()) * 100"
-                    [style.width.%]="((stint.endLap - stint.startLap + 1) / maxLapNumber()) * 100"
-                    [style.background-color]="getCompoundColor(stint.compound, stint.stintNumber)"
-                    [style.border]="
-                      getCompoundColor(stint.compound, stint.stintNumber) === '#FFFFFF'
-                        ? '2px solid #333'
-                        : '2px solid rgba(0,0,0,0.2)'
-                    "
-                    [style.color]="getStintTextColor(stint.compound, stint.stintNumber)"
-                    [title]="
-                      'Stint ' + stint.stintNumber + ': L' + stint.startLap + '-' + stint.endLap
-                    "
-                  >
-                    <div class="gantt-bar-content">
-                      <span class="stint-label">
-                        S{{ stint.stintNumber }} ({{ stint.endLap - stint.startLap + 1 }})
-                      </span>
-                      @if (sessionInfo().sessionType === 'Qualifying') { @if (stint.bestLapTime &&
-                      stint.bestLapTime > 0) {
-                      <span class="stint-avg">{{ formatTime(stint.bestLapTime) }}</span>
-                      } } @else { @if (stint.avgLapTime > 0) {
-                      <span class="stint-avg">{{ formatTime(stint.avgLapTime) }}</span>
-                      } }
-                    </div>
-                  </div>
-                  } }
-                </div>
-              </div>
-              }
-            </div>
-
-            <!-- Legenda gomme -->
-            <div class="compound-legend">
-              <div class="legend-item">
-                <div
-                  class="legend-color soft-color"
-                  [style.background-color]="getCompoundColor('soft')"
-                ></div>
-                <span>Soft</span>
-              </div>
-              <div class="legend-item">
-                <div
-                  class="legend-color medium-color"
-                  [style.background-color]="getCompoundColor('medium')"
-                ></div>
-                <span>Medium</span>
-              </div>
-              <div class="legend-item">
-                <div
-                  class="legend-color hard-color"
-                  [style.background-color]="getCompoundColor('hard')"
-                ></div>
-                <span>Hard</span>
-              </div>
-              <div class="legend-item">
-                <div
-                  class="legend-color inter-color"
-                  [style.background-color]="getCompoundColor('intermediate')"
-                ></div>
-                <span>Intermediate</span>
-              </div>
-              <div class="legend-item">
-                <div
-                  class="legend-color wet-color"
-                  [style.background-color]="getCompoundColor('wet')"
-                ></div>
-                <span>Wet</span>
-              </div>
-            </div>
-          </mat-card-content>
-        </mat-card>
+        <app-stint-analysis
+          [stints]="stints()"
+          [drivers]="drivers()"
+          [numTotLaps]="numTotLaps()"
+          [driverLaps]="driverLaps()"
+          [sessionInfo]="sessionInfo()"
+        ></app-stint-analysis>
       </div>
     </mat-tab>
 
     <!-- Tab 2: Lap Times -->
     <mat-tab [label]="'laps.lap-times' | translate">
       <div class="tab-content">
-        <mat-card>
-          <mat-card-header>
-            <mat-card-title>Lap Time vs Lap Number</mat-card-title>
-            <mat-card-subtitle>All Drivers Comparison</mat-card-subtitle>
-          </mat-card-header>
-          <mat-card-content>
-            @if (lapTimeChartOptions(); as options) {
-            <apx-chart
-              [series]="options.series"
-              [chart]="options.chart"
-              [dataLabels]="options.dataLabels"
-              [stroke]="options.stroke"
-              [xaxis]="options.xaxis"
-              [yaxis]="options.yaxis"
-              [legend]="options.legend"
-              [tooltip]="options.tooltip"
-            ></apx-chart>
-            }
-          </mat-card-content>
-        </mat-card>
+        <app-lap-times [drivers]="drivers()" [driverLaps]="driverLaps()"></app-lap-times>
       </div>
     </mat-tab>
 
     <!-- Tab 3: Timeline Events -->
     <mat-tab [label]="'laps.timeline-events' | translate">
       <div class="tab-content">
-        <mat-card>
-          <mat-card-header>
-            <mat-card-title>Race Timeline</mat-card-title>
-            <mat-card-subtitle>Lap Performance & Key Events</mat-card-subtitle>
-          </mat-card-header>
-          <mat-card-content>
-            <div class="timeline-modern">
-              @for (driverData of driverLapsByPosition(); track $index) {
-              <div class="driver-timeline-modern">
-                <!-- Header con info driver -->
-                <div class="timeline-modern-header">
-                  <div class="driver-name-container">
-                    <span class="driver-name">
-                      <span class="driver-number">#{{ driverData.driverNumber }}</span>
-                      {{ getDriverName(driverData.driverNumber) }}
-                    </span>
-                    <span class="driver-acronym">{{
-                      getDriverAcronym(driverData.driverNumber)
-                    }}</span>
-                    @if (getDriverByNumber(driverData.driverNumber); as driver) {
-                    <span
-                      class="team-badge-timeline"
-                      [style.background-color]="'#' + driver.teamColour"
-                    >
-                      {{ driver.teamName }}
-                    </span>
-                    }
-                  </div>
-                  <div class="driver-stats">
-                    <span class="stat-item">
-                      <span class="stat-label">Laps:</span>
-                      <span class="stat-value">{{ driverData.laps.length }}</span>
-                    </span>
-                    <span class="stat-item">
-                      <span class="stat-label">Best:</span>
-                      <span class="stat-value">{{ formatTime(getBestLapTime(driverData)) }}</span>
-                    </span>
-                    <span class="stat-item">
-                      <span class="stat-label">Avg:</span>
-                      <span class="stat-value">{{ formatTime(getAvgLapTime(driverData)) }}</span>
-                    </span>
-                  </div>
-                </div>
-
-                <!-- Grafico sparkline + eventi -->
-                <div class="timeline-chart-container">
-                  <svg
-                    class="lap-sparkline"
-                    [attr.viewBox]="'0 -30 ' + maxLapNumber() * 10 + ' 130'"
-                    preserveAspectRatio="xMidYMid meet"
-                  >
-                    <!-- Griglia di background -->
-                    <line
-                      x1="0"
-                      y1="90"
-                      [attr.x2]="maxLapNumber() * 10"
-                      y2="90"
-                      stroke="#e0e0e0"
-                      stroke-width="0.5"
-                    />
-                    <line
-                      x1="0"
-                      y1="50"
-                      [attr.x2]="maxLapNumber() * 10"
-                      y2="50"
-                      stroke="#e0e0e0"
-                      stroke-width="0.5"
-                      stroke-dasharray="2,2"
-                    />
-                    <line
-                      x1="0"
-                      y1="10"
-                      [attr.x2]="maxLapNumber() * 10"
-                      y2="10"
-                      stroke="#e0e0e0"
-                      stroke-width="0.5"
-                    />
-
-                    <!-- Icone eventi (disegnate per prime per apparire sotto) -->
-                    @for (event of getDriverEvents(driverData.driverNumber); track $index) {
-                    <g [attr.transform]="'translate(' + (event.lapNumber - 0.5) * 10 + ', -15)'">
-                      @if (event.type === 'pit') {
-                      <!-- Pit Stop -->
-                      <circle
-                        cx="0"
-                        cy="0"
-                        r="10"
-                        fill="#FFC107"
-                        stroke="#FF6F00"
-                        stroke-width="2"
-                        opacity="0.95"
-                      />
-                      <text
-                        x="0"
-                        y="5"
-                        text-anchor="middle"
-                        font-size="14"
-                        fill="#000"
-                        font-weight="bold"
-                      >
-                        ⛽
-                      </text>
-                      } @if (event.type === 'fastest') {
-                      <!-- Fastest Lap -->
-                      <circle
-                        cx="0"
-                        cy="0"
-                        r="10"
-                        fill="#FF5722"
-                        stroke="#D32F2F"
-                        stroke-width="2"
-                        opacity="0.95"
-                      />
-                      <text
-                        x="0"
-                        y="5"
-                        text-anchor="middle"
-                        font-size="14"
-                        fill="#FFF"
-                        font-weight="bold"
-                      >
-                        🔥
-                      </text>
-                      } @if (event.type === 'slowest') {
-                      <!-- Slowest Lap -->
-                      <circle
-                        cx="0"
-                        cy="0"
-                        r="10"
-                        fill="#9E9E9E"
-                        stroke="#616161"
-                        stroke-width="2"
-                        opacity="0.95"
-                      />
-                      <text
-                        x="0"
-                        y="5"
-                        text-anchor="middle"
-                        font-size="14"
-                        fill="#FFF"
-                        font-weight="bold"
-                      >
-                        🐌
-                      </text>
-                      }
-                    </g>
-                    }
-
-                    <!-- Linea del tempo giro (path continuo) -->
-                    <path
-                      [attr.d]="getSparklinePath(driverData)"
-                      fill="none"
-                      stroke="#2196F3"
-                      stroke-width="2"
-                      class="sparkline-path"
-                    />
-
-                    <!-- Punti sul grafico -->
-                    @for (lap of driverData.laps; track $index) { @if (lap.lapDuration > 0) { @let
-                    isFastestLap = isLapEvent(driverData.driverNumber, lap.lapNumber, 'fastest');
-                    @let isSlowestLap = isLapEvent(driverData.driverNumber, lap.lapNumber,
-                    'slowest');
-                    <circle
-                      [attr.cx]="(lap.lapNumber - 0.5) * 10"
-                      [attr.cy]="getSparklineY(lap.lapDuration, driverData)"
-                      [attr.r]="isFastestLap ? 4 : isSlowestLap ? 3.5 : lap.isPitOutLap ? 3 : 2.5"
-                      [attr.fill]="
-                        isFastestLap
-                          ? '#FF5722'
-                          : isSlowestLap
-                          ? '#9E9E9E'
-                          : lap.isPitOutLap
-                          ? '#FFC107'
-                          : '#2196F3'
-                      "
-                      [attr.stroke]="
-                        isFastestLap
-                          ? '#D32F2F'
-                          : isSlowestLap
-                          ? '#616161'
-                          : lap.isPitOutLap
-                          ? '#FF6F00'
-                          : '#1976D2'
-                      "
-                      [attr.stroke-width]="isFastestLap || isSlowestLap ? 2 : 1"
-                      class="sparkline-point"
-                      [class.fastest-point]="isFastestLap"
-                      [class.slowest-point]="isSlowestLap"
-                    >
-                      <title>L{{ lap.lapNumber }}: {{ formatTime(lap.lapDuration) }}</title>
-                    </circle>
-                    } }
-
-                    <!-- Asse X (numeri giro) -->
-                    @for (lapNum of getLapNumbers(); track $index) { @if (lapNum % 5 === 0 || lapNum
-                    === 1) {
-                    <text
-                      [attr.x]="(lapNum - 0.5) * 10"
-                      y="110"
-                      text-anchor="middle"
-                      font-size="10"
-                      fill="#666"
-                      class="lap-marker"
-                    >
-                      {{ lapNum }}
-                    </text>
-                    } }
-                  </svg>
-                </div>
-              </div>
-              }
-            </div>
-          </mat-card-content>
-        </mat-card>
+        <app-events
+          [events]="events()"
+          [drivers]="drivers()"
+          [results]="results()"
+          [numTotLaps]="numTotLaps()"
+          [driverLaps]="driverLaps()"
+        ></app-events>
       </div>
     </mat-tab>
 
     <!-- Tab 4: Sectors Heatmap -->
     <mat-tab [label]="'laps.sectors-heatmap' | translate">
       <div class="tab-content">
-        @for (driverData of driverLaps(); track $index) {
-        <mat-card class="driver-heatmap">
-          <mat-card-header>
-            <mat-card-title>
-              {{ getDriverName(driverData.driverNumber) }}
-              @if (getDriverByNumber(driverData.driverNumber); as driver) {
-              <span
-                class="team-badge"
-                [style.background-color]="'#' + driver.teamColour"
-                [style.margin-left]="'0.75rem'"
-              >
-                {{ driver.teamName }}
-              </span>
-              }
-            </mat-card-title>
-            <mat-card-subtitle>Sector Times Heatmap</mat-card-subtitle>
-          </mat-card-header>
-          <mat-card-content>
-            @if (getHeatmapOptions(driverData.driverNumber); as options) {
-            <apx-chart
-              [series]="options.series"
-              [chart]="options.chart"
-              [dataLabels]="options.dataLabels"
-              [plotOptions]="options.plotOptions"
-              [xaxis]="options.xaxis"
-            ></apx-chart>
-            }
-          </mat-card-content>
-        </mat-card>
-        }
+        <app-heatmap [drivers]="drivers()" [driverLaps]="driverLaps()"></app-heatmap>
       </div>
     </mat-tab>
 
     <mat-tab [label]="'laps.track' | translate">
       <app-track
         [drivers]="drivers()"
-        [sessionInfo]="sessionInfo()"
         [positions]="positions()"
+        [sessionInfo]="sessionInfo()"
       ></app-track>
+    </mat-tab>
+
+    <!-- Tab last: weather -->
+    <mat-tab [label]="'laps.weather' | translate">
+      <div class="tab-content">
+        <app-weather-conditions [weather]="weather()"></app-weather-conditions>
+      </div>
     </mat-tab>
   </mat-tab-group>
 </div>

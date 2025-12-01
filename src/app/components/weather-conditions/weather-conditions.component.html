@@ -1,0 +1,95 @@
+@if (weather().length > 0) {
+<!-- Weather Info Section -->
+<div class="weather-section">
+  <div class="weather-card">
+    <div class="weather-header">
+      <h3 class="weather-title">{{ 'weather-conditions.initial-conditions' | translate }}</h3>
+      <span class="weather-time">{{ initialWeather()!.date | date : 'HH:mm' }}</span>
+    </div>
+
+    <div class="weather-grid">
+      <div class="weather-item">
+        <span class="weather-icon">🌡️</span>
+        <div class="weather-data">
+          <span class="weather-label">{{ 'weather-conditions.air-temperature' | translate }}</span>
+          <span class="weather-value">{{ initialWeather()!.airTemperature }}°C</span>
+        </div>
+      </div>
+
+      <div class="weather-item">
+        <span class="weather-icon">🏁</span>
+        <div class="weather-data">
+          <span class="weather-label">{{
+            'weather-conditions.track-temperature' | translate
+          }}</span>
+          <span class="weather-value">{{ initialWeather()!.trackTemperature }}°C</span>
+        </div>
+      </div>
+
+      <div class="weather-item">
+        <span class="weather-icon">💧</span>
+        <div class="weather-data">
+          <span class="weather-label">{{ 'weather-conditions.humidity' | translate }}</span>
+          <span class="weather-value">{{ initialWeather()!.humidity }}%</span>
+        </div>
+      </div>
+
+      <div class="weather-item">
+        <span class="weather-icon">🌬️</span>
+        <div class="weather-data">
+          <span class="weather-label">{{ 'weather-conditions.wind' | translate }}</span>
+          <span class="weather-value">{{ initialWeather()!.windSpeed }} km/h</span>
+        </div>
+      </div>
+
+      @if (initialWeather()!.rainfall > 0) {
+      <div class="weather-item rainfall">
+        <span class="weather-icon">🌧️</span>
+        <div class="weather-data">
+          <span class="weather-label">{{ 'weather-conditions.rainfall' | translate }}</span>
+          <span class="weather-value">{{ initialWeather()!.rainfall }} mm</span>
+        </div>
+      </div>
+      }
+
+      <div class="weather-item">
+        <span class="weather-icon">📊</span>
+        <div class="weather-data">
+          <span class="weather-label">{{ 'weather-conditions.pressure' | translate }}</span>
+          <span class="weather-value">{{ initialWeather()!.pressure }} mbar</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="weather-header mt-5">
+      <h3 class="weather-title">
+        {{ 'weather-conditions.evolution-title' | translate }}
+      </h3>
+    </div>
+
+    <div class="weather-mini-grid">
+      @for (w of weatherSamples(); track $index) {
+      <div class="weather-mini-item">
+        <span class="weather-mini-time">{{ w.date | date : 'HH:mm' }}</span>
+        <div class="weather-mini-data">
+          <span class="weather-mini-stat">
+            <span class="weather-mini-icon">🌡️</span>
+            <span>{{ w.airTemperature }}°C</span>
+          </span>
+          <span class="weather-mini-stat">
+            <span class="weather-mini-icon">🏁</span>
+            <span>{{ w.trackTemperature }}°C</span>
+          </span>
+          @if (w.rainfall > 0) {
+          <span class="weather-mini-stat rainfall">
+            <span class="weather-mini-icon">🌧️</span>
+            <span>{{ w.rainfall }}mm</span>
+          </span>
+          }
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+</div>
+}

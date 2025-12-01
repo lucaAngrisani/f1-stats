@@ -1,0 +1,209 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>{{ 'events.title' | translate }}</mat-card-title>
+    <mat-card-subtitle>{{ 'events.subtitle' | translate }}</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <div class="timeline-modern">
+      @for (driverData of driverLapsByPosition(); track $index) {
+      <div class="driver-timeline-modern">
+        <!-- Header con info driver -->
+        <div class="timeline-modern-header">
+          <div class="driver-name-container">
+            <span class="driver-name">
+              <span class="driver-number">#{{ driverData.driverNumber }}</span>
+              {{ driverData.driver.fullName }}
+            </span>
+            <span
+              class="team-badge-timeline"
+              [style.background-color]="'#' + driverData.driver.teamColour"
+            >
+              {{ driverData.driver.teamName }}
+            </span>
+          </div>
+          <div class="driver-stats">
+            <span class="stat-item">
+              <span class="stat-label">{{ 'events.laps' | translate }}:</span>
+              <span class="stat-value">{{ driverData.laps.length }}</span>
+            </span>
+            <span class="stat-item">
+              <span class="stat-label">{{ 'events.best' | translate }}:</span>
+              <span class="stat-value">{{ driverData.best }}</span>
+            </span>
+            <span class="stat-item">
+              <span class="stat-label">{{ 'events.avg' | translate }}:</span>
+              <span class="stat-value">{{ driverData.avg }}</span>
+            </span>
+          </div>
+        </div>
+
+        <!-- Grafico sparkline + eventi -->
+        <div class="timeline-chart-container">
+          <svg
+            class="lap-sparkline"
+            [attr.viewBox]="'0 -30 ' + (numTotLaps() * 10 + 40) + ' 150'"
+            preserveAspectRatio="xMidYMid meet"
+          >
+            <!-- Griglia di background e asse Y -->
+            <!-- Linea superiore (tempi veloci) -->
+            <line
+              x1="30"
+              y1="10"
+              [attr.x2]="numTotLaps() * 10 + 30"
+              y2="10"
+              stroke="#e0e0e0"
+              stroke-width="0.5"
+            />
+            <text x="5" y="15" font-size="10" fill="#666">
+              {{ formatTime(driverData.minTime) }}
+            </text>
+
+            <!-- Linea centrale -->
+            <line
+              x1="30"
+              y1="50"
+              [attr.x2]="numTotLaps() * 10 + 30"
+              y2="50"
+              stroke="#e0e0e0"
+              stroke-width="0.5"
+              stroke-dasharray="2,2"
+            />
+            <text x="5" y="55" font-size="10" fill="#666">
+              {{ formatTime((driverData.minTime + driverData.maxTime) / 2) }}
+            </text>
+
+            <!-- Linea inferiore (tempi lenti) -->
+            <line
+              x1="30"
+              y1="90"
+              [attr.x2]="numTotLaps() * 10 + 30"
+              y2="90"
+              stroke="#e0e0e0"
+              stroke-width="0.5"
+            />
+            <text x="5" y="95" font-size="10" fill="#666">
+              {{ formatTime(driverData.maxTime) }}
+            </text>
+
+            <!-- Icone eventi (disegnate per prime per apparire sotto) -->
+            @for (event of driverData.events; track $index) {
+            <g [attr.transform]="'translate(' + ((event.lapNumber - 0.5) * 10 + 30) + ', -15)'">
+              @if (event.type === 'pit') {
+              <!-- Pit Stop -->
+              <circle
+                cx="0"
+                cy="0"
+                r="10"
+                fill="#FFC107"
+                stroke="#FF6F00"
+                stroke-width="2"
+                opacity="0.95"
+              />
+              <text x="0" y="5" text-anchor="middle" font-size="14" fill="#000" font-weight="bold">
+                ⛽
+              </text>
+              } @if (event.type === 'fastest') {
+              <!-- Fastest Lap -->
+              <circle
+                cx="0"
+                cy="0"
+                r="10"
+                fill="#FF5722"
+                stroke="#D32F2F"
+                stroke-width="2"
+                opacity="0.95"
+              />
+              <text x="0" y="5" text-anchor="middle" font-size="14" fill="#FFF" font-weight="bold">
+                🔥
+              </text>
+              } @if (event.type === 'slowest') {
+              <!-- Slowest Lap -->
+              <circle
+                cx="0"
+                cy="0"
+                r="10"
+                fill="#9E9E9E"
+                stroke="#616161"
+                stroke-width="2"
+                opacity="0.95"
+              />
+              <text x="0" y="5" text-anchor="middle" font-size="14" fill="#FFF" font-weight="bold">
+                🐌
+              </text>
+              }
+            </g>
+            }
+
+            <!-- Linea del tempo giro (path continuo) - offset di 30 per asse Y -->
+            <path
+              [attr.d]="transformPathWithOffset(driverData.sparkline, 30)"
+              fill="none"
+              stroke="#2196F3"
+              stroke-width="2"
+              class="sparkline-path"
+            />
+
+            <!-- Punti sul grafico -->
+            @for (lap of driverData.laps; track $index) { @if (lap.lapDuration > 0) {
+            <circle
+              [attr.cx]="(lap.lapNumber - 0.5) * 10 + 30"
+              [attr.cy]="driverData.sparklineY[$index]"
+              [attr.r]="
+                driverData.isFastestLap[$index]
+                  ? 4
+                  : driverData.isSlowestLap[$index]
+                  ? 3.5
+                  : lap.isPitOutLap
+                  ? 3
+                  : 2.5
+              "
+              [attr.fill]="
+                driverData.isFastestLap[$index]
+                  ? '#FF5722'
+                  : driverData.isSlowestLap[$index]
+                  ? '#9E9E9E'
+                  : lap.isPitOutLap
+                  ? '#FFC107'
+                  : '#2196F3'
+              "
+              [attr.stroke]="
+                driverData.isFastestLap[$index]
+                  ? '#D32F2F'
+                  : driverData.isSlowestLap[$index]
+                  ? '#616161'
+                  : lap.isPitOutLap
+                  ? '#FF6F00'
+                  : '#1976D2'
+              "
+              [attr.stroke-width]="
+                driverData.isFastestLap[$index] || driverData.isSlowestLap[$index] ? 2 : 1
+              "
+              class="sparkline-point"
+              [class.fastest-point]="driverData.isFastestLap[$index]"
+              [class.slowest-point]="driverData.isSlowestLap[$index]"
+            >
+              <title>L{{ lap.lapNumber }}: {{ driverData.lapTimes[$index] }}</title>
+            </circle>
+            } }
+
+            <!-- Asse X (numeri giro) -->
+            @for (lapNum of getLapNumbers(); track $index) { @if (lapNum % 5 === 0 || lapNum === 1)
+            {
+            <text
+              [attr.x]="(lapNum - 0.5) * 10 + 30"
+              y="110"
+              text-anchor="middle"
+              font-size="10"
+              fill="#666"
+              class="lap-marker"
+            >
+              {{ lapNum }}
+            </text>
+            } }
+          </svg>
+        </div>
+      </div>
+      }
+    </div>
+  </mat-card-content>
+</mat-card>

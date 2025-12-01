@@ -1,4 +1,4 @@
-import { Component, inject, input, OnInit, signal, computed } from '@angular/core';
+import { Component, inject, input, OnInit, signal } from '@angular/core';
 import { SessionApiService } from '../../services/api/session-api.service';
 import { Session } from '../../models/session.model';
 import { SessionResult } from '../../models/session-result.model';
@@ -9,12 +9,14 @@ import { LapsInfoComponent } from '../../components/laps-info/laps-info.componen
 import { Weather } from '../../models/weather.model';
 import { Position } from '../../models/position.model';
 import { DatePipe } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
+import { Stint } from '../../models/stint.model';
 
 @Component({
   selector: 'app-session',
   templateUrl: './session.component.html',
   styleUrl: './session.component.css',
-  imports: [LapsInfoComponent, DatePipe],
+  imports: [LapsInfoComponent, DatePipe, TranslateModule],
   providers: [SessionApiService, DriverApiService, LapsInfoComponent],
 })
 export default class SessionComponent implements OnInit {
@@ -28,30 +30,19 @@ export default class SessionComponent implements OnInit {
   public positions = signal<Position[]>([]);
   public weather = signal<Weather[]>([]);
   public drivers = signal<Driver[]>([]);
+  public stints = signal<Stint[]>([]);
   public laps = signal<Lap[]>([]);
-
-  // Computed per il meteo corrente (ultimo dato disponibile)
-  public currentWeather = computed(() => {
-    const weatherData = this.weather();
-    if (weatherData.length === 0) return null;
-    // Ordina per data e prendi l'ultimo
-    return weatherData.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())[0];
-  });
-
-  // Computed per verificare se la sessione è Qualifying
-  public isQualifying = computed(() => {
-    return this.sessionInfo().sessionType === 'Qualifying';
-  });
 
   async ngOnInit() {
     const sessionKey = this.sessionKey();
-    const [session, sessionResult, laps, positions, drivers, weather] = await Promise.all([
+    const [session, sessionResult, laps, positions, drivers, weather, stints] = await Promise.all([
       this.sessionApiSvc.getSession(sessionKey),
       this.sessionApiSvc.getSessionResult(sessionKey),
       this.sessionApiSvc.getLap(sessionKey),
       this.sessionApiSvc.getPosition(sessionKey),
       this.driverApiSvc.getAllDriver(sessionKey),
       this.sessionApiSvc.getWeather(sessionKey),
+      this.sessionApiSvc.getStints(sessionKey),
     ]);
 
     this.sessionInfo.set(session[0]);
@@ -62,78 +53,6 @@ export default class SessionComponent implements OnInit {
     );
     this.laps.set(laps ?? []);
     this.positions.set(positions ?? []);
-  }
-
-  formatDuration(seconds: number): string {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const secs = Math.floor(seconds % 60);
-    const ms = Math.floor((seconds % 1) * 1000);
-
-    if (hours > 0) {
-      return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-    } else if (minutes > 0) {
-      return `${minutes}:${secs.toString().padStart(2, '0')}.${ms.toString().padStart(3, '0')}`;
-    } else {
-      return `${secs}.${ms.toString().padStart(3, '0')}s`;
-    }
-  }
-
-  formatGap(seconds: number): string {
-    if (seconds) {
-      if (seconds < 60) {
-        return `${seconds.toFixed(3)}s`;
-      } else {
-        const minutes = Math.floor(seconds / 60);
-        const secs = seconds % 60;
-        return `${minutes}:${secs.toFixed(3)}`;
-      }
-    } else {
-      return '';
-    }
-
-  }
-
-  getDriverByNumber(driverNumber: number): Driver | undefined {
-    return this.drivers().find((d) => d.driverNumber === driverNumber);
-  }
-
-  isArray(value: any): value is any[] {
-    return Array.isArray(value);
-  }
-
-  isNumber(value: any): value is number {
-    return typeof value === 'number';
-  }
-
-  asNumberArray(value: number | number[]): number[] {
-    return Array.isArray(value) ? value : [value];
-  }
-
-  asNumber(value: number | number[]): number {
-    return Array.isArray(value) ? value[0] : value;
-  }
-
-  formatGapValue(gap: number | string | null | undefined): string {
-    if (gap === null || gap === undefined) {
-      return 'ND';
-    }
-    if (typeof gap === 'string') {
-      return gap;
-    }
-    if (gap === 0) {
-      return '0.000s';
-    }
-    return '+' + this.formatGap(gap);
-  }
-
-  safeFormatGap(gap: number | number[] | string | null | undefined): string {
-    if (gap === null || gap === undefined) {
-      return 'ND';
-    }
-    if (Array.isArray(gap)) {
-      return this.formatGapValue(gap[0]);
-    }
-    return this.formatGapValue(gap);
+    this.stints.set(stints ?? []);
   }
 }

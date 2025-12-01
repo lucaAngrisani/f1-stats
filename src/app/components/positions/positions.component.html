@@ -1,0 +1,25 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>{{ 'laps.position-evolution' | translate }}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    @if (positionChartOptions(); as options) {
+    <apx-chart
+      [series]="options.series"
+      [chart]="options.chart"
+      [dataLabels]="options.dataLabels"
+      [stroke]="options.stroke"
+      [markers]="options.markers"
+      [xaxis]="options.xaxis"
+      [yaxis]="options.yaxis"
+      [legend]="options.legend"
+      [tooltip]="options.tooltip"
+      [colors]="options.colors"
+    ></apx-chart>
+    } @else {
+    <div class="no-data-message">
+      <p>{{ 'laps.position-data-not-available' | translate }}</p>
+    </div>
+    }
+  </mat-card-content>
+</mat-card>

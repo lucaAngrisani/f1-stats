@@ -1,0 +1,74 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>{{'stint-analysis.title' | translate}}</mat-card-title>
+    <mat-card-subtitle>{{'stint-analysis.subtitle' | translate}}</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <div class="gantt-container">
+      @for (driverData of drivers(); track $index) {
+      <div class="gantt-driver-card">
+        <div class="gantt-driver-header">
+          <div class="gantt-driver-main">
+            <mat-chip>{{ driverData.fullName }}</mat-chip>
+            <span class="gantt-driver-number">#{{ driverData.driverNumber }}</span>
+          </div>
+          <div class="gantt-team-info">
+            <span class="gantt-team-badge" [style.background-color]="'#' + driverData.teamColour">
+              {{ driverData.teamName }}
+            </span>
+          </div>
+        </div>
+        <div class="gantt-bars">
+          @for (stint of stintsForPlot(); track $index) { @if (stint.driverNumber ===
+          driverData.driverNumber) {
+          <div
+            class="gantt-bar"
+            [style.left.%]="((stint.startLap - 1) / numTotLaps()) * 100"
+            [style.width.%]="((stint.endLap - stint.startLap + 1) / numTotLaps()) * 100"
+            [style.background-color]="stint.compoundBackgroundColor"
+            [style.color]="stint.compoundColor"
+            [title]="'Stint ' + stint.stintNumber + ': L' + stint.startLap + '-' + stint.endLap"
+          >
+            <div class="gantt-bar-content">
+              <span class="stint-label">
+                S{{ stint.stintNumber }} @if(stint.endLap - stint.startLap + 1 >= 4 ) { ({{ stint.endLap - stint.startLap + 1 }}) }
+              </span>
+              @if(stint.endLap - stint.startLap + 1 >= 4 ) { @if (sessionInfo().sessionType ===
+              'Qualifying') {
+              <span class="stint-avg">{{ stint.bestLapTime }}</span>
+              } @else {
+              <span class="stint-avg">{{ stint.avgLapTime }}</span>
+              } }
+            </div>
+          </div>
+          } }
+        </div>
+      </div>
+      }
+    </div>
+
+    <!-- Legenda gomme -->
+    <div class="compound-legend">
+      <div class="legend-item">
+        <div class="legend-color soft"></div>
+        <span>Soft</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color medium"></div>
+        <span>Medium</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color hard"></div>
+        <span>Hard</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color inter"></div>
+        <span>Intermediate</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color wet"></div>
+        <span>Wet</span>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>

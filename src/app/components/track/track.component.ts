@@ -57,7 +57,10 @@ export class TrackComponent {
   private readonly CHUNK_DURATION_SECONDS = 80; // 80 secondi per chunk
   private readonly PRELOAD_CHUNKS = 2; // Numero di chunk da precaricare in anticipo
   private readonly MAX_LOADED_CHUNKS = 5; // Massimo numero di chunk in memoria (aumentato per evitare cleanup troppo aggressivo)
-  private readonly PLAYBACK_SPEED_MS = 100; // Velocità di riproduzione: 100ms di tempo reale per update
+
+  // Configurazione velocità playback (modificabile)
+  public playbackSpeedMs = 100; // Intervallo in ms tra un frame e l'altro (più alto = più lento)
+  public playbackTimeStep = 1000; // Avanzamento temporale in ms per ogni frame (più alto = più veloce)
 
   // Stato del caricamento
   loadedChunks = new Set<number>(); // Indici dei chunk già caricati (public per il template)
@@ -297,7 +300,7 @@ export class TrackComponent {
     });
 
     // Effect per monitorare il chunk corrente e caricare dati in anticipo
-    effect(() => {
+    effect(async () => {
       const currentChunk = this.currentChunkIndex();
       const totalChunks = this.totalChunks();
 
@@ -305,14 +308,14 @@ export class TrackComponent {
         // Carica il chunk corrente se non è già caricato
         if (!this.loadedChunks.has(currentChunk)) {
           console.log(`Loading current chunk: ${currentChunk}`);
-          this.loadChunk(currentChunk);
+          await this.loadChunk(currentChunk);
         }
 
-        // Carica i chunk successivi (preload)
+        // Carica i chunk successivi (preload) in serie
         for (let i = 1; i <= this.PRELOAD_CHUNKS; i++) {
           const chunkToLoad = currentChunk + i;
           if (chunkToLoad < totalChunks && !this.loadedChunks.has(chunkToLoad)) {
-            this.loadChunk(chunkToLoad);
+            await this.loadChunk(chunkToLoad);
           }
         }
 
@@ -460,11 +463,18 @@ export class TrackComponent {
 
   // Gestione dello slider
   onSliderChange(event: any): void {
-    this.currentTimeMs.set(event.value);
-    if (this.isPlaying()) {
-      this.pause();
+    // Assicurati che il valore sia un numero
+    const newValue = typeof event === 'number' ? event : Number(event.value || event);
+
+    if (!isNaN(newValue)) {
+      this.currentTimeMs.set(newValue);
+      if (this.isPlaying()) {
+        this.pause();
+      }
+      // Il caricamento dei chunk sarà gestito automaticamente dall'effect
+    } else {
+      console.error('Invalid slider value:', event);
     }
-    // Il caricamento dei chunk sarà gestito automaticamente dall'effect
   }
 
   // Play/Pause animazione
@@ -483,8 +493,8 @@ export class TrackComponent {
     this.animationInterval = setInterval(() => {
       const current = this.currentTimeMs();
 
-      // Avanza il tempo (es: 100ms di video per ogni 100ms reali)
-      const nextTime = current + 1000; // Avanza di 1 secondo per ogni frame
+      // Avanza il tempo usando il timeStep configurabile
+      const nextTime = current + this.playbackTimeStep;
 
       if (nextTime >= totalDuration) {
         this.pause(); // Ferma alla fine
@@ -492,7 +502,7 @@ export class TrackComponent {
         this.currentTimeMs.set(nextTime);
         // Il caricamento dei chunk sarà gestito automaticamente dall'effect
       }
-    }, this.PLAYBACK_SPEED_MS);
+    }, this.playbackSpeedMs);
   }
 
   pause(): void {
