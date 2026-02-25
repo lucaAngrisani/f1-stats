@@ -35,24 +35,48 @@ export default class SessionComponent implements OnInit {
 
   async ngOnInit() {
     const sessionKey = this.sessionKey();
-    const [session, sessionResult, laps, positions, drivers, weather, stints] = await Promise.all([
+    const [session, sessionResult, drivers] = await Promise.all([
       this.sessionApiSvc.getSession(sessionKey),
       this.sessionApiSvc.getSessionResult(sessionKey),
-      this.sessionApiSvc.getLap(sessionKey),
-      this.sessionApiSvc.getPosition(sessionKey),
       this.driverApiSvc.getAllDriver(sessionKey),
-      this.sessionApiSvc.getWeather(sessionKey),
-      this.sessionApiSvc.getStints(sessionKey),
     ]);
 
     this.sessionInfo.set(session[0]);
     this.session.set(sessionResult ?? []);
-    this.weather.set(weather ?? []);
     this.drivers.set(
-      sessionResult.map((s) => drivers.find((d) => d.driverNumber == s.driverNumber)!) ?? []
+      sessionResult.map((s) => drivers.find((d) => d.driverNumber == s.driverNumber)!) ?? [],
     );
-    this.laps.set(laps ?? []);
-    this.positions.set(positions ?? []);
+  }
+
+  async loadWeather() {
+    if (this.weather().length > 0) return;
+
+    const sessionKey = this.sessionKey();
+    const weather = await this.sessionApiSvc.getWeather(sessionKey);
+    this.weather.set(weather ?? []);
+  }
+
+  async loadStints() {
+    if (this.stints().length > 0) return;
+
+    const sessionKey = this.sessionKey();
+    const stints = await this.sessionApiSvc.getStints(sessionKey);
     this.stints.set(stints ?? []);
+  }
+
+  async loadPositions() {
+    if (this.positions().length > 0) return;
+
+    const sessionKey = this.sessionKey();
+    const positions = await this.sessionApiSvc.getPosition(sessionKey);
+    this.positions.set(positions ?? []);
+  }
+
+  async loadLaps() {
+    if (this.laps().length > 0) return;
+
+    const sessionKey = this.sessionKey();
+    const laps = await this.sessionApiSvc.getLap(sessionKey);
+    this.laps.set(laps ?? []);
   }
 }

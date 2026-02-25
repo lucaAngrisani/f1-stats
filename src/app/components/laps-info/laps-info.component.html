@@ -1,7 +1,7 @@
 <div class="laps-info-container">
   <!-- Weather Evolution (if data available) -->
 
-  <mat-tab-group>
+  <mat-tab-group (selectedTabChange)="onTabChange($event.index)">
     <!-- Tab 0: Results -->
     <mat-tab [label]="'laps.results' | translate">
       <div class="tab-content">
@@ -16,18 +16,18 @@
 
     <!-- Tab 1: Position Chart (only for Race and Sprint Race) -->
     @if (sessionInfo().sessionType === 'Race' || sessionInfo().sessionType === 'SprintRace') {
-    <mat-tab [label]="'laps.position-chart' | translate">
-      <div class="tab-content">
-        <app-positions
-          [results]="results()"
-          [drivers]="drivers()"
-          [positions]="positions()"
-          [numTotLaps]="numTotLaps()"
-          [driverLaps]="driverLaps()"
-        >
-        </app-positions>
-      </div>
-    </mat-tab>
+      <mat-tab [label]="'laps.position-chart' | translate">
+        <div class="tab-content">
+          <app-positions
+            [results]="results()"
+            [drivers]="drivers()"
+            [positions]="positions()"
+            [numTotLaps]="numTotLaps()"
+            [driverLaps]="driverLaps()"
+          >
+          </app-positions>
+        </div>
+      </mat-tab>
     }
 
     <!-- Tab 2: Stint Analysis -->
@@ -71,11 +71,16 @@
     </mat-tab>
 
     <mat-tab [label]="'laps.track' | translate">
-      <app-track
-        [drivers]="drivers()"
-        [positions]="positions()"
-        [sessionInfo]="sessionInfo()"
-      ></app-track>
+      @if (
+        selectedTabIndex() ===
+        (sessionInfo().sessionType === 'Race' || sessionInfo().sessionType === 'SprintRace' ? 6 : 5)
+      ) {
+        <app-track
+          [drivers]="drivers()"
+          [positions]="positions()"
+          [sessionInfo]="sessionInfo()"
+        ></app-track>
+      }
     </mat-tab>
 
     <!-- Tab last: weather -->

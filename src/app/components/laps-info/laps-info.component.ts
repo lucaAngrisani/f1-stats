@@ -1,4 +1,4 @@
-import { Component, computed, input, InputSignal, Signal } from '@angular/core';
+import { Component, computed, input, InputSignal, output, signal, Signal } from '@angular/core';
 import { Lap } from '../../models/lap.model';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatCardModule } from '@angular/material/card';
@@ -49,6 +49,13 @@ export class LapsInfoComponent {
   positions: InputSignal<Position[]> = input<Position[]>([]);
   sessionInfo: InputSignal<Session> = input<Session>(new Session());
   results: InputSignal<SessionResult[]> = input<SessionResult[]>([]);
+
+  loadWeather = output<void>();
+  loadPositions = output<void>();
+  loadStints = output<void>();
+  loadLaps = output<void>();
+
+  selectedTabIndex = signal<number>(0);
 
   // Raggruppa i giri per driver
   driverLaps: Signal<DriverLaps[]> = computed(() => {
@@ -132,4 +139,38 @@ export class LapsInfoComponent {
 
     return allEvents.sort((a, b) => a.lapNumber - b.lapNumber);
   });
+
+  onTabChange(index: number) {
+    // Calcola quale tab è stata selezionata, considerando la tab Position che potrebbe non esserci
+    const hasPositionTab =
+      this.sessionInfo().sessionType === 'Race' || this.sessionInfo().sessionType === 'SprintRace';
+    // Indici tab: 0=Results, 1=Position (se presente), 2=Stint, 3=LapTimes, 4=Events, 5=Heatmap, 6=Track, 7=Weather
+    const weatherTabIndex = hasPositionTab ? 7 : 6;
+    const positionTabIndex = 1;
+    const stintTabIndex = hasPositionTab ? 2 : 1;
+    const lapTabIndex = hasPositionTab ? 3 : 2;
+    const timelineTabIndex = hasPositionTab ? 4 : 3;
+    const sectorsTabIndex = hasPositionTab ? 5 : 4;
+
+    if (index === weatherTabIndex) {
+      this.loadWeather.emit();
+    }
+    if (hasPositionTab && index === positionTabIndex) {
+      this.loadLaps.emit();
+      this.loadPositions.emit();
+    }
+    if (index === stintTabIndex) {
+      this.loadStints.emit();
+    }
+    if (
+      index === timelineTabIndex ||
+      index == lapTabIndex ||
+      index === positionTabIndex ||
+      index === sectorsTabIndex
+    ) {
+      this.loadLaps.emit();
+    }
+
+    this.selectedTabIndex.set(index);
+  }
 }
